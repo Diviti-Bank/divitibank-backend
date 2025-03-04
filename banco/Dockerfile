@@ -1,12 +1,9 @@
 
 FROM ubuntu:latest as build
-
 RUN apt-get update && apt-get install openjdk-21-jdk maven -y
-
 WORKDIR /app/banco
 
-
-COPY . .  
+COPY . .
 
 RUN mvn clean install
 
