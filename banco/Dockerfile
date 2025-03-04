@@ -8,7 +8,7 @@ WORKDIR /banco
 COPY . /banco
 
 # Run Maven to build the project
-RUN mvn package -DskipTests
+RUN mvn package -DskipTests -X
 
 # Use OpenJDK 21 JDK slim for runtime image (includes full JDK)
 FROM openjdk:21-jdk-slim
