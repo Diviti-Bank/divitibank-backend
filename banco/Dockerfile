@@ -1,26 +1,16 @@
-FROM ubuntu:latest as build
-RUN apt-get update && apt-get install openjdk-21-jdk maven -y
+from ubuntu:latest as build
 
-# Define o diretório de trabalho
-WORKDIR /app/banco
-
-# Copia apenas o pom.xml primeiro para aproveitar o cache do Docker
-COPY pom.xml .
-
-# Baixa as dependências (isso pode ser armazenado em cache)
-RUN mvn dependency:go-offline
-
-# Copia o restante do código
+run apt-get update
+run apt-get install openjdk-21-jdk -y
+WORKDIR /banco
 COPY . .
 
-# Executa o build do Maven
-RUN mvn clean install
+run apt-get install maven -y
+
 
 FROM openjdk:21-jdk-slim
 
-# Copia o JAR gerado para o contêiner final
-COPY --from=build /app/banco/target/divitibank-1.0.0.jar app.jar
+COPY --from=build /banco/target/divitibank-1.0.0.jar app.jar
 
-# Define o comando de execução
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
