@@ -1,5 +1,5 @@
 # Using Maven 3.9.6 with Eclipse Temurin 21 as the base image for build
-FROM maven:3.9.6-openjdk-21 AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 # Set the working directory inside the container
 WORKDIR /banco
