@@ -2,7 +2,7 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
-RUN mvn package -DskipTests
+RUN mvn clean install
 
 # Etapa final
 FROM openjdk:21-jdk-slim
