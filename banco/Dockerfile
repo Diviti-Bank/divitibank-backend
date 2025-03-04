@@ -1,3 +1,10 @@
+FROM openjdk:21-jdk-slim AS build
+WORKDIR /app
+
+COPY . .
+
+RUN ./mvnw package -DskipTests
+
 FROM openjdk:21-jdk-slim
 
 WORKDIR /app
