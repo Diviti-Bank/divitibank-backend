@@ -5,7 +5,7 @@ FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /banco
 
 # Copy all files from the local project into the working directory
-COPY ./banco /banco
+COPY ./banco .
 
 # Run Maven to build the project
 run mvn clean package -DskipTests -X
