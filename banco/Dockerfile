@@ -2,10 +2,10 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 # Set the working directory inside the container
-WORKDIR ./banco
+WORKDIR /banco
 
 # Copy all files from the local project into the working directory
-COPY ./banco
+COPY ./banco /banco
 
 # Run Maven to build the project
 run mvn clean package -DskipTests -X
