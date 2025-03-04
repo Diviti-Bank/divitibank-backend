@@ -1,12 +1,15 @@
-# Etapa de build
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean install
+from ubunto:latest as build
 
-# Etapa final
+run apt-get update
+run apt-get install openjdk-21-jdk -y
+COPY . .
+
+run apt-get install maven -y
+run mvn clean install
+
 FROM openjdk:21-jdk-slim
-WORKDIR /app
+
 COPY --from=build /app/target/*.jar app.jar
+
 CMD ["java", "-jar", "app.jar"]
 
