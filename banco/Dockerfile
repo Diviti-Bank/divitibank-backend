@@ -1,14 +1,12 @@
-FROM openjdk:21-jdk-slim AS build
+# Etapa de build
+FROM maven:3.8.6-openjdk-21 AS build
 WORKDIR /app
-
 COPY . .
+RUN mvn package -DskipTests
 
-RUN ./mvnw package -DskipTests
-
+# Etapa final
 FROM openjdk:21-jdk-slim
-
 WORKDIR /app
-
-COPY --from=build /target/divitibank-1.0.0.jar app.jar
-
+COPY --from=build /app/target/*.jar app.jar
 CMD ["java", "-jar", "app.jar"]
+
