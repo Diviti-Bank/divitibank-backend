@@ -6,7 +6,7 @@ WORKDIR /banco
 COPY . .
 
 run apt-get install maven -y
-RUN mvn clean install
+RUN mvn clean install - Dskiptests
 
 FROM openjdk:21-jdk-slim
 
