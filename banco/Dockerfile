@@ -2,6 +2,7 @@ from ubuntu:latest as build
 
 run apt-get update
 run apt-get install openjdk-21-jdk -y
+WORKDIR /banco
 COPY . .
 
 run apt-get install maven -y
