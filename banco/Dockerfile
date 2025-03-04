@@ -1,5 +1,4 @@
-# Using a base image with JDK 21 and Maven  
-FROM maven:3.8.6-openjdk-21 AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 # Set as working directory
 WORKDIR /banco
