@@ -9,7 +9,7 @@ run apt-get install maven -y
 
 FROM openjdk:21-jdk-slim
 
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/divitibank.jar app.jar
 
 CMD ["java", "-jar", "app.jar"]
 
