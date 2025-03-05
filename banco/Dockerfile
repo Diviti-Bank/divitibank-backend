@@ -1,20 +1,19 @@
-# Using Maven 3.9.6 with Eclipse Temurin 21 as the base image for build
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+FROM ubuntu:latest as build
 
-# Set the working directory inside the container
+RUN apt-get update && apt-get install openjdk-21-jdk maven -y
+
 WORKDIR /banco
 
-# Copy all files from the local project into the working directory
-COPY ./banco .
+COPY . .
 
-# Run Maven to build the project
-run mvn clean package -DskipTests -X
+RUN mvn clean install
 
-
-# Use OpenJDK 21 JDK slim for runtime image (includes full JDK)
 FROM openjdk:21-jdk-slim
 
-COPY --from=build /banco/target/divitibank-1.0.0.jar /app.jar
+WORKDIR /banco
+
+COPY --from=build /banco/target/divitibank-1.0.0.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
 
