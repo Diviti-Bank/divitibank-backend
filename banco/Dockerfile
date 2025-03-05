@@ -4,9 +4,9 @@ RUN apt-get update && apt-get install openjdk-21-jdk maven -y
 
 WORKDIR /banco
 
-COPY . .
+COPY ./banco .
 
-RUN mvn clean install
+run mvn clean package -DskipTests -X
 
 FROM openjdk:21-jdk-slim
 
