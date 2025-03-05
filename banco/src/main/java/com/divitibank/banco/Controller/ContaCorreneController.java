@@ -35,4 +35,9 @@ public class ContaCorreneController {
     public void deletarContaPorId(@PathVariable String cpf) {
         contaCorrenteService.excluirContaPorId(cpf);
     }
+
+    @RequestMapping("/error")
+    public String handleError() {
+        return "error";
+    }
 }
