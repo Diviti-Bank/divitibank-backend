@@ -19,15 +19,15 @@ public class ContaCorreneController {
         return contaCorrenteService.saveConta(contaCorrente);
     }
     @GetMapping("/{cpf}/cartoes")
-    public Optional<List<Cartao>> buscarCartaoUsuario(String cpf) {
+    public Optional<List<Cartao>> buscarCartaoUsuario(@PathVariable String cpf) {
         return contaCorrenteService.buscarCartao(cpf);
     }
     @GetMapping("/{cpf}/extrato")
-    public Optional<List<Extrato>> buscarExtratoUsuario(String cpf) {
+    public Optional<List<Extrato>> buscarExtratoUsuario(@PathVariable String cpf) {
         return contaCorrenteService.buscarExtrato(cpf);
     }
     @GetMapping("/{cpf}/informacoes")
-    public ContaCorrente buscarPorCpf(String cpf) {
+    public ContaCorrente buscarPorCpf(@PathVariable String cpf) {
         return contaCorrenteService.buscarInformacoesPorCpf(cpf);
     }
 
