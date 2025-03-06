@@ -4,6 +4,7 @@ import com.divitibank.banco.Entity.Cartao;
 import com.divitibank.banco.Entity.ContaCorrente;
 import com.divitibank.banco.Entity.Extrato;
 import com.divitibank.banco.Service.ContaCorrenteService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,10 @@ import java.util.Optional;
 @RequestMapping("/contas")
 public class ContaCorreneController {
     private ContaCorrenteService contaCorrenteService;
+
+    public ContaCorreneController(ContaCorrenteService contaCorrenteService) {
+        this.contaCorrenteService = contaCorrenteService;
+    }
 
     @PostMapping("/criar")
     public ContaCorrente salvarConta(@RequestBody ContaCorrente contaCorrente) {
