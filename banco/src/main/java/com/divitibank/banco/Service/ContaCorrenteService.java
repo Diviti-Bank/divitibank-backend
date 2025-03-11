@@ -27,7 +27,10 @@ public class ContaCorrenteService {
 
         if((contaDestino != null)&&(contaRemetente != null)) {
             if (contaRemetente.getSaldo() >= dinheiroDouble) {
+                contaRemetente.setSaldo(contaRemetente.getSaldo() - dinheiroDouble);
                 contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+                contaCorrenteRepository.save(contaRemetente);
+                contaCorrenteRepository.save(contaDestino);
                 return true;
             }else {
                 return false;
