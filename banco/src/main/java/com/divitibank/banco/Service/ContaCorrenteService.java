@@ -20,6 +20,23 @@ public class ContaCorrenteService {
         return contaCorrenteRepository.save(contaCorrente);
     }
 
+    public boolean transferirDinheiro(String cpfDestino, String cpfRemetente, String dinheiro) {
+        ContaCorrente contaDestino = contaCorrenteRepository.buscarPorCpf(cpfDestino);
+        ContaCorrente contaRemetente = contaCorrenteRepository.buscarPorCpf(cpfRemetente);
+        double dinheiroDouble = Double.parseDouble(dinheiro);
+
+        if((contaDestino != null)&&(contaRemetente != null)) {
+            if (contaRemetente.getSaldo() >= dinheiroDouble) {
+                contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return false;
+        }
+    }
+
     public Optional<List<Extrato>> buscarExtrato(String cpf) {
         ContaCorrente conta = contaCorrenteRepository.buscarExtratoPorUsuario(cpf);
 

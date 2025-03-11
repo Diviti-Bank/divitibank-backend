@@ -52,6 +52,12 @@ public class ContaCorreneController {
         contaCorrenteService.excluirContaPorId(cpf);
     }
 
+    @PostMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}")
+    public boolean transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino, @PathVariable String dinheiro) {
+        return contaCorrenteService.transferirDinheiro(cpfDestino, cpfRemetente, dinheiro);
+    }
+    
+
     @RequestMapping("/error")
     public ResponseEntity<String> handleError() {
         return new ResponseEntity<>("Ocorreu um erro!", HttpStatus.INTERNAL_SERVER_ERROR);

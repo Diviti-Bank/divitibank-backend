@@ -13,4 +13,6 @@ public interface ContaCorrenteRepository extends MongoRepository<ContaCorrente, 
     ContaCorrente buscarExtratoPorUsuario(String cpf);
     @Query(value = "{'cpf':  ?0}", fields = "{'_id':  0, 'nome': 1,'sobrenome': 1,'cpf': 1,'data_nascimento': 1}")
     ContaCorrente buscarInformacoesPorCPF(String cpf);
+    @Query(value = "{'cpf': ?0}")
+    ContaCorrente buscarPorCpf(String cpf);
 }
