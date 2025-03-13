@@ -6,6 +6,7 @@ public class Cartao {
     private String status;
     private double credito;
     private String tipo_cartao;
+    private String cor_cartao;
     private boolean aproximacao;
     private int cvc;
     private String nome_cartao;
@@ -90,17 +91,22 @@ public class Cartao {
         this.validade = validade;
     }
 
+    public String getCor_cartao() {
+        return cor_cartao;
+    }
+
+    public void setCor_cartao(String cor_cartao) {
+        this.cor_cartao = cor_cartao;
+    }
+
     @Override
     public String toString() {
-        return "Cartao{" +
-                "status='" + status + '\'' +
-                ", credito=" + credito +
-                ", tipo_cartao='" + tipo_cartao + '\'' +
-                ", aproximacao=" + aproximacao +
-                ", cvc=" + cvc +
-                ", nome_cartao='" + nome_cartao + '\'' +
-                ", numero_cartao='" + numero_cartao + '\'' +
-                ", validade='" + validade + '\'' +
-                '}';
+        return "Cartao [status=" + status + ", credito=" + credito + ", tipo_cartao=" + tipo_cartao + ", cor_cartao="
+                + cor_cartao + ", aproximacao=" + aproximacao + ", cvc=" + cvc + ", nome_cartao=" + nome_cartao
+                + ", numero_cartao=" + numero_cartao + ", validade=" + validade + "]";
     }
+
+    
+
+    
 }

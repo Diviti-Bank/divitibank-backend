@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 public interface ContaCorrenteRepository extends MongoRepository<ContaCorrente, String> {
     @Query(value = "{'cpf': ?0}", fields = "{'_id': 0,'cartoes': 1}")
     ContaCorrente buscarCartaoPorUsuario(String cpf);
+    @Query(value = "{'cpf': ?0, 'cor': ?1}", fields = "{'_id': 0,'cartoes': 1}")
+    ContaCorrente buscarCartaoPorCor(String cpf, String cor);
     @Query(value= "{'cpf': ?0}", fields = "{'_id': 0,'extrato': 1}")
     ContaCorrente buscarExtratoPorUsuario(String cpf);
     @Query(value = "{'cpf':  ?0}", fields = "{'_id':  0, 'nome': 1,'sobrenome': 1,'cpf': 1,'data_nascimento': 1}")
