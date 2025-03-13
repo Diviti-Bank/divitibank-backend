@@ -53,8 +53,8 @@ public class ContaCorreneController {
     }
 
     @PostMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}")
-    public boolean transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino, @PathVariable String dinheiro) {
-        return contaCorrenteService.transferirDinheiro(cpfDestino, cpfRemetente, dinheiro);
+    public boolean transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino,@PathVariable String metodo_pagamento, @PathVariable String dinheiro) {
+        return contaCorrenteService.transferirDinheiro(cpfDestino, cpfRemetente, metodo_pagamento, dinheiro);
     }
     
 

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Extrato {
     private String tipo;
-    private String origem;
+    private String origem; //ou o destinatario
     private double quantia;
     private Date data;
 
