@@ -5,10 +5,15 @@ import com.divitibank.banco.Entity.ContaCorrente;
 import com.divitibank.banco.Entity.Extrato;
 import com.divitibank.banco.Repository.ContaCorrenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -21,10 +26,12 @@ public class ContaCorrenteService {
         return contaCorrenteRepository.save(contaCorrente);
     }
 
-    public boolean transferirDinheiro(String cpfDestino, String cpfRemetente, String metodo_pagamento, String dinheiro) {
+    public ResponseEntity<Map<String, Object>> transferirDinheiro(String cpfDestino, String cpfRemetente, String metodo_pagamento, String dinheiro) {
         ContaCorrente contaDestino = contaCorrenteRepository.buscarPorCpf(cpfDestino);
         ContaCorrente contaRemetente = contaCorrenteRepository.buscarPorCpf(cpfRemetente);
         double dinheiroDouble = Double.parseDouble(dinheiro);
+        
+        Map<String, Object> response = new HashMap<>();
 
         
         switch (metodo_pagamento) {
@@ -33,16 +40,22 @@ public class ContaCorrenteService {
                     contaRemetente.setSaldo(contaRemetente.getSaldo() - dinheiroDouble);
                     contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                     
-                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), dinheiroDouble, new Date());
+                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
                     contaRemetente.getExtrato().add(extratoRemetente);
                     Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                     contaDestino.getExtrato().add(extratoDestino);
                     
                     contaCorrenteRepository.save(contaRemetente);
                     contaCorrenteRepository.save(contaDestino);
-                    return true;
+
+                    response.put("status", "sucesso");
+                    response.put("mensagem", "Transferência realizada com sucesso");
+
+                    return ResponseEntity.ok(response);
                 }else {
-                    return false;
+                    response.put("status", "erro");
+                    response.put("mensagem", "Saldo insuficiente para a transferência");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                 }
             case "1":
                 ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"blue");
@@ -50,12 +63,23 @@ public class ContaCorrenteService {
                 if (cartaoblue.getCredito() >= dinheiroDouble) {
                     cartaoblue.setCredito(cartaoblue.getCredito() - dinheiroDouble);
                     contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+                    
+                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                    contaRemetente.getExtrato().add(extratoRemetente);
+                    Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
+                    contaDestino.getExtrato().add(extratoDestino);
 
                     contaCorrenteRepository.save(cartoes);
                     contaCorrenteRepository.save(contaDestino);
-                    return true;                   
+
+                    response.put("status", "sucesso");
+                    response.put("mensagem", "Transferência realizada com sucesso");
+
+                    return ResponseEntity.ok(response);                  
                 }else {
-                    return false;
+                    response.put("status", "erro");
+                    response.put("mensagem", "Saldo insuficiente para a transferência");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                 }
             case "2":
                 ContaCorrente cartaos = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente, "black");
@@ -63,14 +87,28 @@ public class ContaCorrenteService {
                 if (cartaoblack.getCredito() >= dinheiroDouble) {
                     cartaoblack.setCredito(cartaoblack.getCredito() - dinheiroDouble);
                     contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+
+                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                    contaRemetente.getExtrato().add(extratoRemetente);
+                    Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
+                    contaDestino.getExtrato().add(extratoDestino);
+
                     contaCorrenteRepository.save(cartaos);
                     contaCorrenteRepository.save(contaDestino);
-                    return true;
+
+                    response.put("status", "sucesso");
+                    response.put("mensagem", "Transferência realizada com sucesso");
+
+                    return ResponseEntity.ok(response);                  
                 }else {
-                    return false;
+                    response.put("status", "erro");
+                    response.put("mensagem", "Saldo insuficiente para a transferência");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                 }
             default:
-                return false;  
+                response.put("status", "erro");
+                response.put("mensagem", "metodo de pagamento incorreto");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                     
         }
     }
@@ -93,10 +131,20 @@ public class ContaCorrenteService {
         return Optional.empty();
     }
 
+    public Optional<List<Cartao>> buscarCartaoPorCor(String cpf, String cor) {
+        ContaCorrente conta  = contaCorrenteRepository.buscarCartaoPorCor(cpf,cor);
+
+        if(conta != null) {
+            return Optional.ofNullable(conta.getCartoes());
+        }
+        return Optional.empty();
+    }
+
     public ContaCorrente buscarInformacoesPorCpf(String cpf) {
         ContaCorrente conta = contaCorrenteRepository.buscarInformacoesPorCPF(cpf);
         return conta;
     }
+
     public void excluirContaPorId(String cpf) {
         contaCorrenteRepository.deleteById(cpf);
     }
