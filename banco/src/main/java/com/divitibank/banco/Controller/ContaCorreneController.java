@@ -1,6 +1,7 @@
 package com.divitibank.banco.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,11 @@ public class ContaCorreneController {
     public ContaCorrente salvarConta(@RequestBody ContaCorrente contaCorrente) {
         return contaCorrenteService.saveConta(contaCorrente);
     }
+
+    @GetMapping
+    public Optional<List<Cartao>> buscarCartaoPorCor(@PathVariable String cpf, @PathVariable String cor) {
+        return contaCorrenteService.buscarCartaoPorCor(cpf, cor);
+    }
     
     @GetMapping("/{cpf}/cartoes")
     public Optional<List<Cartao>> buscarCartaoUsuario(@PathVariable String cpf) {
@@ -52,8 +58,8 @@ public class ContaCorreneController {
         contaCorrenteService.excluirContaPorId(cpf);
     }
 
-    @PostMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}")
-    public boolean transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino,@PathVariable String metodo_pagamento, @PathVariable String dinheiro) {
+    @PostMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}")
+    public ResponseEntity<Map<String, Object>> transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino,@PathVariable String metodo_pagamento, @PathVariable String dinheiro) {
         return contaCorrenteService.transferirDinheiro(cpfDestino, cpfRemetente, metodo_pagamento, dinheiro);
     }
     
