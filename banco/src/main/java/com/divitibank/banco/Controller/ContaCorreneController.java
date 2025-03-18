@@ -77,7 +77,7 @@ public class ContaCorreneController {
     }
 
     @PostMapping("/criar/cartao/{cpf}")
-    public ContaCorrente postMethodName(@PathVariable String cpf, @RequestBody Cartao cartao) {
+    public ContaCorrente registrarCartao(@PathVariable String cpf, @RequestBody Cartao cartao) {
         return contaCorrenteService.criarCartao(cpf, cartao);
     }
     

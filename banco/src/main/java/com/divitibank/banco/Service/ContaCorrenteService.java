@@ -32,89 +32,110 @@ public class ContaCorrenteService {
 
     public ResponseEntity<Map<String, Object>> transferirDinheiro(String cpfDestino, String cpfRemetente, String metodo_pagamento, String dinheiro) {
         ContaCorrente contaDestino = contaCorrenteRepository.buscarPorCpf(cpfDestino);
-        ContaCorrente contaRemetente = contaCorrenteRepository.buscarPorCpf(cpfRemetente);
-        double dinheiroDouble = Double.parseDouble(dinheiro);
+        if (contaDestino == null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", "erro");
+            response.put("mensagem", "cpf do destinatario não existe");
+            return ResponseEntity.ok(response); 
+        }else {
+            ContaCorrente contaRemetente = contaCorrenteRepository.buscarPorCpf(cpfRemetente);
+            double dinheiroDouble = Double.parseDouble(dinheiro);
         
-        Map<String, Object> response = new HashMap<>();
+            Map<String, Object> response = new HashMap<>();
 
         
-        switch (metodo_pagamento) {
-            case "0":
-                if (contaRemetente.getSaldo() >= dinheiroDouble) {
-                    contaRemetente.setSaldo(contaRemetente.getSaldo() - dinheiroDouble);
-                    contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+            switch (metodo_pagamento) {
+                case "0":
+                    if (contaRemetente.getSaldo() >= dinheiroDouble) {
+                        contaRemetente.setSaldo(contaRemetente.getSaldo() - dinheiroDouble);
+                        contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                     
-                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
-                    contaRemetente.getExtrato().add(extratoRemetente);
-                    Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
-                    contaDestino.getExtrato().add(extratoDestino);
+                        Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                        contaRemetente.getExtrato().add(extratoRemetente);
+                        Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
+                        contaDestino.getExtrato().add(extratoDestino);
+                        
+                        contaCorrenteRepository.save(contaRemetente);
+                        contaCorrenteRepository.save(contaDestino);
+
+                        response.put("status", "sucesso");
+                        response.put("mensagem", "Transferência realizada com sucesso");
+
+                        return ResponseEntity.ok(response);
+                    }else {
+                        response.put("status", "erro");
+                        response.put("mensagem", "Saldo insuficiente para a transferência");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                    }
+                case "1":
+                    ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"blue");
+                    Cartao cartaoblue = cartoes.getCartoes().getFirst();
+                    if (cartaoblue.getStatus() == "ativo") {
+                        if ((cartaoblue.getCredito() >= dinheiroDouble)) {
+                            contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+                        
+                            Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                            contaRemetente.getExtrato().add(extratoRemetente);
+                            Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
+                            contaDestino.getExtrato().add(extratoDestino);
+                            
+                            contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
+                            contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() -  dinheiroDouble);
+                            contaCorrenteRepository.save(contaDestino);
+    
+                            response.put("status", "sucesso");
+                            response.put("mensagem", "Transferência realizada com sucesso");
+    
+                            return ResponseEntity.ok(response);                  
+                        }else {
+                            response.put("status", "erro");
+                            response.put("mensagem", "Saldo insuficiente para a transferência");
+                            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                        }
+                    }else {
+                        response.put("status", "erro");
+                        response.put("mensagem", "o cartão está inativo");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                    }
+                
+                case "2":
+                ContaCorrente cartoesBlack = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"black");
+                Cartao cartaoblack = cartoesBlack.getCartoes().getFirst();
+                if (cartaoblack.getStatus() == "ativo") {
+                    if (cartaoblack.getCredito() >= dinheiroDouble) {
+                        contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                     
-                    contaCorrenteRepository.save(contaRemetente);
-                    contaCorrenteRepository.save(contaDestino);
-
-                    response.put("status", "sucesso");
-                    response.put("mensagem", "Transferência realizada com sucesso");
-
-                    return ResponseEntity.ok(response);
+                        Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                        contaRemetente.getExtrato().add(extratoRemetente);
+                        Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
+                        contaDestino.getExtrato().add(extratoDestino);
+                    
+                        contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
+                        contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblack.getCredito() - dinheiroDouble);
+                        contaCorrenteRepository.save(contaDestino);
+    
+                        response.put("status", "sucesso");
+                        response.put("mensagem", "Transferência realizada com sucesso");
+    
+                        return ResponseEntity.ok(response);                  
+                    }else {
+                        response.put("status", "erro");
+                        response.put("mensagem", "Saldo insuficiente para a transferência");
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                    }
                 }else {
                     response.put("status", "erro");
-                    response.put("mensagem", "Saldo insuficiente para a transferência");
+                    response.put("mensagem", "o cartão esta inativo");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                 }
-            case "1":
-                ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"blue");
-                Cartao cartaoblue = cartoes.getCartoes().getFirst();
-                if (cartaoblue.getCredito() >= dinheiroDouble) {
-                    contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
-                    
-                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
-                    contaRemetente.getExtrato().add(extratoRemetente);
-                    Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
-                    contaDestino.getExtrato().add(extratoDestino);
-                    
-                    contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
-                    contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() - dinheiroDouble);
-                    contaCorrenteRepository.save(contaDestino);
-
-                    response.put("status", "sucesso");
-                    response.put("mensagem", "Transferência realizada com sucesso");
-
-                    return ResponseEntity.ok(response);                  
-                }else {
+                default:
                     response.put("status", "erro");
-                    response.put("mensagem", "Saldo insuficiente para a transferência");
+                    response.put("mensagem", "metodo de pagamento incorreto");
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-                }
-            case "2":
-            ContaCorrente cartoesBlack = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"black");
-            Cartao cartaoblack = cartoesBlack.getCartoes().getFirst();
-            if (cartaoblack.getCredito() >= dinheiroDouble) {
-                contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
-                
-                Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
-                contaRemetente.getExtrato().add(extratoRemetente);
-                Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
-                contaDestino.getExtrato().add(extratoDestino);
-                
-                contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
-                contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblack.getCredito() - dinheiroDouble);
-                contaCorrenteRepository.save(contaDestino);
-
-                response.put("status", "sucesso");
-                response.put("mensagem", "Transferência realizada com sucesso");
-
-                return ResponseEntity.ok(response);                  
-            }else {
-                response.put("status", "erro");
-                response.put("mensagem", "Saldo insuficiente para a transferência");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                    
             }
-            default:
-                response.put("status", "erro");
-                response.put("mensagem", "metodo de pagamento incorreto");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-                    
         }
+    
     }
 
     public Optional<List<Extrato>> buscarExtrato(String cpf) {
