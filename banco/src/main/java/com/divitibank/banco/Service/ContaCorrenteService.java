@@ -6,7 +6,6 @@ import com.divitibank.banco.Entity.Extrato;
 import com.divitibank.banco.Repository.ContaCorrenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +23,11 @@ public class ContaCorrenteService {
 
     public ContaCorrente saveConta(ContaCorrente contaCorrente) {
         return contaCorrenteRepository.save(contaCorrente);
+    }
+
+    public ContaCorrente buscarPorCpf(String cpf) {
+        ContaCorrente conta = contaCorrenteRepository.buscarPorCpf(cpf);
+        return conta;
     }
 
     public ResponseEntity<Map<String, Object>> transferirDinheiro(String cpfDestino, String cpfRemetente, String metodo_pagamento, String dinheiro) {
@@ -61,15 +65,15 @@ public class ContaCorrenteService {
                 ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"blue");
                 Cartao cartaoblue = cartoes.getCartoes().getFirst();
                 if (cartaoblue.getCredito() >= dinheiroDouble) {
-                    cartaoblue.setCredito(cartaoblue.getCredito() - dinheiroDouble);
                     contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                     
                     Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
                     contaRemetente.getExtrato().add(extratoRemetente);
                     Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                     contaDestino.getExtrato().add(extratoDestino);
-
-                    contaCorrenteRepository.save(cartoes);
+                    
+                    contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
+                    contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() - dinheiroDouble);
                     contaCorrenteRepository.save(contaDestino);
 
                     response.put("status", "sucesso");
@@ -82,29 +86,29 @@ public class ContaCorrenteService {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
                 }
             case "2":
-                ContaCorrente cartaos = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente, "black");
-                Cartao cartaoblack = cartaos.getCartoes().getFirst();
-                if (cartaoblack.getCredito() >= dinheiroDouble) {
-                    cartaoblack.setCredito(cartaoblack.getCredito() - dinheiroDouble);
-                    contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+            ContaCorrente cartoesBlack = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"black");
+            Cartao cartaoblack = cartoesBlack.getCartoes().getFirst();
+            if (cartaoblack.getCredito() >= dinheiroDouble) {
+                contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
+                
+                Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                contaRemetente.getExtrato().add(extratoRemetente);
+                Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
+                contaDestino.getExtrato().add(extratoDestino);
+                
+                contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
+                contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblack.getCredito() - dinheiroDouble);
+                contaCorrenteRepository.save(contaDestino);
 
-                    Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
-                    contaRemetente.getExtrato().add(extratoRemetente);
-                    Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
-                    contaDestino.getExtrato().add(extratoDestino);
+                response.put("status", "sucesso");
+                response.put("mensagem", "Transferência realizada com sucesso");
 
-                    contaCorrenteRepository.save(cartaos);
-                    contaCorrenteRepository.save(contaDestino);
-
-                    response.put("status", "sucesso");
-                    response.put("mensagem", "Transferência realizada com sucesso");
-
-                    return ResponseEntity.ok(response);                  
-                }else {
-                    response.put("status", "erro");
-                    response.put("mensagem", "Saldo insuficiente para a transferência");
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-                }
+                return ResponseEntity.ok(response);                  
+            }else {
+                response.put("status", "erro");
+                response.put("mensagem", "Saldo insuficiente para a transferência");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
             default:
                 response.put("status", "erro");
                 response.put("mensagem", "metodo de pagamento incorreto");
@@ -122,6 +126,12 @@ public class ContaCorrenteService {
         return Optional.empty();
     }
 
+    public ContaCorrente criarCartao(String cpf ,Cartao cartao) {
+        ContaCorrente contaCorrente = contaCorrenteRepository.buscarPorCpf(cpf);
+        contaCorrente.getCartoes().add(cartao);
+        return contaCorrenteRepository.save(contaCorrente);
+    }
+
     public Optional<List<Cartao>> buscarCartao(String cpf) {
         ContaCorrente conta  = contaCorrenteRepository.buscarCartaoPorUsuario(cpf);
 
@@ -131,11 +141,11 @@ public class ContaCorrenteService {
         return Optional.empty();
     }
 
-    public Optional<List<Cartao>> buscarCartaoPorCor(String cpf, String cor) {
-        ContaCorrente conta  = contaCorrenteRepository.buscarCartaoPorCor(cpf,cor);
-
-        if(conta != null) {
-            return Optional.ofNullable(conta.getCartoes());
+    public Optional<Cartao> buscarCartaoPorCor(String cpf, String cor) {
+        ContaCorrente conta = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
+    
+        if (conta != null && conta.getCartoes() != null) {
+            return conta.getCartoes().stream().findFirst();
         }
         return Optional.empty();
     }
@@ -146,7 +156,8 @@ public class ContaCorrenteService {
     }
 
     public void excluirContaPorId(String cpf) {
-        contaCorrenteRepository.deleteById(cpf);
+        ContaCorrente contaCorrente = contaCorrenteRepository.buscarPorCpf(cpf);
+        contaCorrenteRepository.delete(contaCorrente);
     }
 
 

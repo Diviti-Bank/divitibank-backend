@@ -19,6 +19,9 @@ import com.divitibank.banco.Entity.ContaCorrente;
 import com.divitibank.banco.Entity.Extrato;
 import com.divitibank.banco.Service.ContaCorrenteService;
 
+
+
+
 @RestController
 @RequestMapping("/contas")
 public class ContaCorreneController {
@@ -33,8 +36,8 @@ public class ContaCorreneController {
         return contaCorrenteService.saveConta(contaCorrente);
     }
 
-    @GetMapping
-    public Optional<List<Cartao>> buscarCartaoPorCor(@PathVariable String cpf, @PathVariable String cor) {
+    @GetMapping("/buscarCartao/{cpf}/{cor}")
+    public Optional<Cartao> buscarCartaoPorCor(@PathVariable String cpf, @PathVariable String cor) {
         return contaCorrenteService.buscarCartaoPorCor(cpf, cor);
     }
     
@@ -62,10 +65,21 @@ public class ContaCorreneController {
     public ResponseEntity<Map<String, Object>> transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino,@PathVariable String metodo_pagamento, @PathVariable String dinheiro) {
         return contaCorrenteService.transferirDinheiro(cpfDestino, cpfRemetente, metodo_pagamento, dinheiro);
     }
-    
+
+    @GetMapping("/buscar/{cpf}")
+    public ContaCorrente buscarPrCpf(@PathVariable String cpf) {
+        return contaCorrenteService.buscarPorCpf(cpf);
+    }    
 
     @RequestMapping("/error")
     public ResponseEntity<String> handleError() {
         return new ResponseEntity<>("Ocorreu um erro!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @PostMapping("/criar/cartao/{cpf}")
+    public ContaCorrente postMethodName(@PathVariable String cpf, @RequestBody Cartao cartao) {
+        return contaCorrenteService.criarCartao(cpf, cartao);
+    }
+    
+    
 }
