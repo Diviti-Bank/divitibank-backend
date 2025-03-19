@@ -16,7 +16,7 @@ Utilize o comando git clone para clonar o repositorio
 git clone https://github.com/Diviti-Bank/divitibank-backend.git
 ```
 Em seguida, abra o projeto pela sua IDE e execute ele;
-Depois de executar, você abre o Swagger pelo localhost utilizando o link http://localhost:8080/swagger-ui.html
+</br> Depois de executar, você abre o Swagger pelo localhost utilizando o link http://localhost:8080/swagger-ui.html
 
 então você já pode testar as funções da api local
 
