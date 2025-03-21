@@ -24,9 +24,13 @@ git clone https://github.com/Diviti-Bank/divitibank-backend.git
 ```
 instale as dependencias
 ```bash
-npm install
+mvn clean install
 ```
-</br> Depois de executar o projeto em sua IDE, abra o Swagger pelo localhost utilizando o link http://localhost:8080/swagger-ui.html
+execute o projeto springboot na sua terminal
+```bash
+mvn spring-boot:run
+```
+</br> Depois, abra o Swagger pelo localhost utilizando o link http://localhost:8080/swagger-ui.html
 
 então você já pode testar as funções da api local
 
@@ -77,7 +81,8 @@ ele vai pegar todas as contas e vai retornar o documento da conta buscada por cp
 ```http
 GET /contas/{cpf}/informacoes
 ```
-
+ele pega algumas informações do usuario para poder utilizar em uma tela onde so mostra essas informações do usuario
+</br> exemplo de retorno da função:
 ```JSON
 {
   "cpf_usuario": "111.222.333-44",
@@ -85,3 +90,5 @@ GET /contas/{cpf}/informacoes
   "data_nascimento": "1999-01-01T02:00:00.000+00:00"
 }
 ```
+
+
