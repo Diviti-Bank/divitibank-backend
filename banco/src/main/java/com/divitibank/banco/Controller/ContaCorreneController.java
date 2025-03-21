@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,8 @@ import com.divitibank.banco.Entity.Cartao;
 import com.divitibank.banco.Entity.ContaCorrente;
 import com.divitibank.banco.Entity.Extrato;
 import com.divitibank.banco.Service.ContaCorrenteService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -32,7 +35,7 @@ public class ContaCorreneController {
     }
 
     @PostMapping("/criar")
-    public ContaCorrente salvarConta(@RequestBody ContaCorrente contaCorrente) {
+    public ResponseEntity<Map<String, Object>> salvarConta(@RequestBody ContaCorrente contaCorrente) {
         return contaCorrenteService.saveConta(contaCorrente);
     }
 
@@ -61,7 +64,7 @@ public class ContaCorreneController {
         contaCorrenteService.excluirContaPorId(cpf);
     }
 
-    @PostMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}")
+    @PutMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}")
     public ResponseEntity<Map<String, Object>> transferirDinheiro(@PathVariable String cpfRemetente, @PathVariable String cpfDestino,@PathVariable String metodo_pagamento, @PathVariable String dinheiro) {
         return contaCorrenteService.transferirDinheiro(cpfDestino, cpfRemetente, metodo_pagamento, dinheiro);
     }
@@ -77,9 +80,15 @@ public class ContaCorreneController {
     }
 
     @PostMapping("/criar/cartao/{cpf}")
-    public ContaCorrente registrarCartao(@PathVariable String cpf, @RequestBody Cartao cartao) {
+    public ResponseEntity<Map<String, Object>> registrarCartao(@PathVariable String cpf, @RequestBody Cartao cartao) {
         return contaCorrenteService.criarCartao(cpf, cartao);
     }
+
+    @GetMapping("/gerarcomprovante/{cpfRemetente}/{cpfDestino}/{dataTransferencia}/{dinheiroTransferido}")
+    public ResponseEntity<Map<String, Object>>  gerarComprovante(@RequestParam String cpfRemetente,@RequestParam String cpfDestino,@RequestParam double dinheiroTransferido) {
+        return contaCorrenteService.gerarComprovante(cpfRemetente, cpfDestino, dinheiroTransferido);
+    }
+    
     
     
 }

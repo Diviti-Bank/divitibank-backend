@@ -21,8 +21,19 @@ public class ContaCorrenteService {
     @Autowired
     private ContaCorrenteRepository contaCorrenteRepository;
 
-    public ContaCorrente saveConta(ContaCorrente contaCorrente) {
-        return contaCorrenteRepository.save(contaCorrente);
+    public ResponseEntity<Map<String, Object>> saveConta(ContaCorrente contaCorrente) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(contaCorrente.getCpf());
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste == null) {
+            contaCorrenteRepository.save(contaCorrente);
+            response.put("status", "sucesso");
+            response.put("mensagem", "a conta foi inserida com sucesso");
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "já existe uma conta com esse CPF");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     public ContaCorrente buscarPorCpf(String cpf) {
@@ -42,7 +53,6 @@ public class ContaCorrenteService {
             double dinheiroDouble = Double.parseDouble(dinheiro);
         
             Map<String, Object> response = new HashMap<>();
-
         
             switch (metodo_pagamento) {
                 case "0":
@@ -70,7 +80,7 @@ public class ContaCorrenteService {
                 case "1":
                     ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"blue");
                     Cartao cartaoblue = cartoes.getCartoes().getFirst();
-                    if (cartaoblue.getStatus() == "ativo") {
+                    if (cartaoblue.getStatus().equals("ativo")) {
                         if ((cartaoblue.getCredito() >= dinheiroDouble)) {
                             contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                         
@@ -101,7 +111,7 @@ public class ContaCorrenteService {
                 case "2":
                 ContaCorrente cartoesBlack = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"black");
                 Cartao cartaoblack = cartoesBlack.getCartoes().getFirst();
-                if (cartaoblack.getStatus() == "ativo") {
+                if (cartaoblack.getStatus().equals("ativo")) {
                     if (cartaoblack.getCredito() >= dinheiroDouble) {
                         contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                     
@@ -147,10 +157,21 @@ public class ContaCorrenteService {
         return Optional.empty();
     }
 
-    public ContaCorrente criarCartao(String cpf ,Cartao cartao) {
+    public ResponseEntity<Map<String, Object>> criarCartao(String cpf ,Cartao cartao) {
         ContaCorrente contaCorrente = contaCorrenteRepository.buscarPorCpf(cpf);
-        contaCorrente.getCartoes().add(cartao);
-        return contaCorrenteRepository.save(contaCorrente);
+        Map<String, Object> response = new HashMap<>();
+        if (contaCorrente != null) {
+            contaCorrente.getCartoes().add(cartao);
+            contaCorrenteRepository.save(contaCorrente);
+            
+            response.put("status", "sucesso");
+            response.put("mensagem", "o cartão foi inserida com sucesso");
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "não foi possivel encontrar essa conta");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     public Optional<List<Cartao>> buscarCartao(String cpf) {
@@ -164,6 +185,7 @@ public class ContaCorrenteService {
 
     public Optional<Cartao> buscarCartaoPorCor(String cpf, String cor) {
         ContaCorrente conta = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
+        System.out.println(conta);
     
         if (conta != null && conta.getCartoes() != null) {
             return conta.getCartoes().stream().findFirst();
@@ -181,5 +203,22 @@ public class ContaCorrenteService {
         contaCorrenteRepository.delete(contaCorrente);
     }
 
+    public ResponseEntity<Map<String, Object>> gerarComprovante(String cpfRemetente, String cpfDestino, double dinheiroTransferido) {
+        ContaCorrente contaDestino = contaCorrenteRepository.buscarPorCpf(cpfDestino);
+        ContaCorrente contaRemetente = contaCorrenteRepository.buscarPorCpf(cpfRemetente);
+        Date dataTransferencia = new Date();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("nome_autor", contaRemetente.getNome() +" "+ contaRemetente.getSobrenome());
+        response.put("cpf_autor", contaRemetente.getCpf());
+        response.put("nome_destinatario", contaDestino.getNome() +" "+ contaDestino.getSobrenome());
+        response.put("cpf_destinatario", contaDestino.getCpf());
+        response.put("data_e_hora", dataTransferencia);
+        response.put("dinheiro_transferido", Double.toString(dinheiroTransferido));
+
+        return ResponseEntity.ok(response); 
+    }
+
+    
 
 }
