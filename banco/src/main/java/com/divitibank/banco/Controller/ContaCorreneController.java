@@ -55,7 +55,7 @@ public class ContaCorreneController {
     }
 
     @GetMapping("/{cpf}/informacoes")
-    public ContaCorrente buscarPorCpf(@PathVariable String cpf) {
+    public ResponseEntity<Map<String, Object>> buscarPorCpf(@PathVariable String cpf) {
         return contaCorrenteService.buscarInformacoesPorCpf(cpf);
     }
 

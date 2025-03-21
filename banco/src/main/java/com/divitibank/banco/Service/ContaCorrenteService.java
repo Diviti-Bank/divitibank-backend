@@ -193,9 +193,13 @@ public class ContaCorrenteService {
         return Optional.empty();
     }
 
-    public ContaCorrente buscarInformacoesPorCpf(String cpf) {
+    public ResponseEntity<Map<String, Object>> buscarInformacoesPorCpf(String cpf) {
         ContaCorrente conta = contaCorrenteRepository.buscarInformacoesPorCPF(cpf);
-        return conta;
+        Map<String, Object> response = new HashMap<>();
+        response.put("nome_sobrenome", conta.getNome() +" "+ conta.getSobrenome());
+        response.put("data_nascimento", conta.getdata_nascimento());
+        response.put("cpf_usuario", conta.getCpf());
+        return ResponseEntity.ok(response);
     }
 
     public void excluirContaPorId(String cpf) {
@@ -219,6 +223,6 @@ public class ContaCorrenteService {
         return ResponseEntity.ok(response); 
     }
 
-    
+
 
 }
