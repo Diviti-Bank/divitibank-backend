@@ -22,11 +22,11 @@ Utilize o comando git clone para clonar o repositorio
 ```gitBash
 git clone https://github.com/Diviti-Bank/divitibank-backend.git
 ```
-instale as dependencias
+instale as dependencias na terminal do projeto
 ```bash
 mvn clean install
 ```
-execute o projeto springboot na sua terminal
+execute o projeto springboot na mesma terminal
 ```bash
 mvn spring-boot:run
 ```
