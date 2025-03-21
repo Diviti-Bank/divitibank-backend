@@ -78,4 +78,10 @@ ele vai pegar todas as contas e vai retornar o documento da conta buscada por cp
 GET /contas/{cpf}/informacoes
 ```
 
-
+```JSON
+{
+  "cpf_usuario": "111.222.333-44",
+  "nome_sobrenome": "teste testado",
+  "data_nascimento": "1999-01-01T02:00:00.000+00:00"
+}
+```
