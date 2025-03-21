@@ -93,7 +93,7 @@ ele pega algumas informações do usuario para poder utilizar em uma tela onde s
 
 ### criar conta corrente
 ```http
-GET /contas/criar
+POST /contas/criar
 ```
 ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a função cria outra conta
 </br> a função vai retornar um json dizendo se deu certo ou não
