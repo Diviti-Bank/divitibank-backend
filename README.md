@@ -103,3 +103,37 @@ ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a
   "mensagem": "a conta foi inserida com sucesso"
 }
 ```
+
+### deletar conta corrente
+```http
+DELETE /contas/{cpf}/excluir
+```
+ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cpf
+</br> a função vai retornar um json dizendo se ela conseguiu ou não
+```JSON
+{
+  "status": "erro",
+  "mensagem": "já existe uma conta com esse CPF"
+}
+```
+
+### fazer transferencias
+```http
+PUT /contas/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}
+```
+ele vai perguntar o cpf do usuario que voce quer transferir e depois perguntar o metodo de pagamento que vai ser um numero de 0 a 2
+</br> numero 0 é a carteira digital do usuario
+</br> numero 1 é o cartão "blue" do usuario, se ele tiver
+</br> numero 2 é o cartão "black" do usuario, se ele tiver
+</br> ele retorna um json caso tenha dado errado ou certo
+```JSON
+{
+  "status": "erro",
+  "mensagem": "Saldo insuficiente para a transferência"
+}
+```
+
+
+
+
+
