@@ -185,7 +185,6 @@ public class ContaCorrenteService {
 
     public Optional<Cartao> buscarCartaoPorCor(String cpf, String cor) {
         ContaCorrente conta = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
-        System.out.println(conta);
     
         if (conta != null && conta.getCartoes() != null) {
             return conta.getCartoes().stream().findFirst();
@@ -202,9 +201,19 @@ public class ContaCorrenteService {
         return ResponseEntity.ok(response);
     }
 
-    public void excluirContaPorId(String cpf) {
+    public ResponseEntity<Map<String, Object>> excluirContaPorId(String cpf) {
         ContaCorrente contaCorrente = contaCorrenteRepository.buscarPorCpf(cpf);
-        contaCorrenteRepository.delete(contaCorrente);
+        Map<String, Object> response = new HashMap<>();
+        if (contaCorrente != null) {
+            contaCorrenteRepository.delete(contaCorrente);
+            response.put("status", "sucesso");
+            response.put("mensagem", "a conta foi deletada com sucesso");
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "não existe uma conta com esse CPF");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
     }
 
     public ResponseEntity<Map<String, Object>> gerarComprovante(String cpfRemetente, String cpfDestino, double dinheiroTransferido) {
@@ -223,6 +232,27 @@ public class ContaCorrenteService {
         return ResponseEntity.ok(response); 
     }
 
-
+    public ResponseEntity<Map<String, Object>> atualizarStatusCartao(String cpf, String cor, String status) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        ContaCorrente cartaoPorCor = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            if (cartaoPorCor != null) {
+                contaCorrenteRepository.atualizarStatusCartao(cpf, cor, status);
+                response.put("status", "sucesso");
+                response.put("mensagem", "o status foi atualizado com sucesso");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "erro");
+                response.put("mensagem", "esse cartão não existe");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
 }
