@@ -60,8 +60,8 @@ public class ContaCorreneController {
     }
 
     @DeleteMapping("/{cpf}/excluir")
-    public void deletarContaPorId(@PathVariable String cpf) {
-        contaCorrenteService.excluirContaPorId(cpf);
+    public ResponseEntity<Map<String, Object>> deletarContaPorId(@PathVariable String cpf) {
+        return contaCorrenteService.excluirContaPorId(cpf);
     }
 
     @PutMapping("/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}")
@@ -89,6 +89,9 @@ public class ContaCorreneController {
         return contaCorrenteService.gerarComprovante(cpfRemetente, cpfDestino, dinheiroTransferido);
     }
     
-    
+    @PutMapping("/mudarstatus/{cpf}/{cor}/{status}")
+    public ResponseEntity<Map<String, Object>> atualizarStatusCartao(String cpf, String cor, String status) {
+       return contaCorrenteService.atualizarStatusCartao(cpf, cor, status);
+    }
     
 }
