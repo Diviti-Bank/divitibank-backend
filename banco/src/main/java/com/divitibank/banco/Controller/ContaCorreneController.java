@@ -90,12 +90,12 @@ public class ContaCorreneController {
     }
     
     @PutMapping("/mudarstatus/{cpf}/{cor}/{status}")
-    public ResponseEntity<Map<String, Object>> atualizarStatusCartao(String cpf, String cor, String status) {
+    public ResponseEntity<Map<String, Object>> atualizarStatusCartao(@PathVariable String cpf,@PathVariable String cor,@PathVariable String status) {
        return contaCorrenteService.atualizarStatusCartao(cpf, cor, status);
     }
 
     @PutMapping("/mudarcredito/{cpf}/{cor}/{novoCredito}")
-    public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(String cpf, String cor, double novoCredito) {
+    public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(@PathVariable String cpf,@PathVariable String cor,@PathVariable double novoCredito) {
         return contaCorrenteService.atualizarCreditoCartao(cpf, cor, novoCredito);
     }
     
