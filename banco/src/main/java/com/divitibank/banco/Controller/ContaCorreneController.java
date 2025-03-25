@@ -94,6 +94,7 @@ public class ContaCorreneController {
        return contaCorrenteService.atualizarStatusCartao(cpf, cor, status);
     }
 
+    @PutMapping("/mudarcredito/{cpf}/{cor}/{novoCredito}")
     public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(String cpf, String cor, double novoCredito) {
         return contaCorrenteService.atualizarCreditoCartao(cpf, cor, novoCredito);
     }
