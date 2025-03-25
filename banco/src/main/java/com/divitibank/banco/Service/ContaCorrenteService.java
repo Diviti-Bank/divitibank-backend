@@ -255,4 +255,26 @@ public class ContaCorrenteService {
         }
     }
 
+    public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(String cpf, String cor, double novoCredito) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        ContaCorrente cartaoPorCor = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            if (cartaoPorCor != null) {
+                contaCorrenteRepository.atualizarCreditoCartao(cpf, cor, novoCredito);;
+                response.put("status", "sucesso");
+                response.put("mensagem", "o crédito foi atualizado com sucesso");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "erro");
+                response.put("mensagem", "esse cartão não existe");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

@@ -93,5 +93,9 @@ public class ContaCorreneController {
     public ResponseEntity<Map<String, Object>> atualizarStatusCartao(String cpf, String cor, String status) {
        return contaCorrenteService.atualizarStatusCartao(cpf, cor, status);
     }
+
+    public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(String cpf, String cor, double novoCredito) {
+        return contaCorrenteService.atualizarCreditoCartao(cpf, cor, novoCredito);
+    }
     
 }
