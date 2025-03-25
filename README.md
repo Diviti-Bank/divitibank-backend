@@ -153,7 +153,31 @@ ele vai gerar um comprovante mostrando informações de quem recebeu, de quem pa
 }
 ```
 
-
-
+### criar um cartao
+```http
+POST /contas/criar/cartao/{cpf}
+```
+ele vai buscar o cpf do usuario inserido e vai pedir as informações em forma de json para o sistema inserir no cartao, como: crédito, cvc, numero do cartão e etc.
+</br> ele vai retornar um json falando se ele conseguiu ou não inserir o cartão
+```JSON
+{
+  "status": "sucesso",
+  "mensagem": "o cartão foi inserida com sucesso"
+}
+```
+as informações que serão inseridas são essas:
+```JSON
+{
+  "status": "string",
+  "credito": 0,
+  "tipo_cartao": "string",
+  "cor_cartao": "string",
+  "aproximacao": true,
+  "cvc": 0,
+  "nome_cartao": "string",
+  "numero_cartao": "string",
+  "validade": "string"
+}
+```
 
 
