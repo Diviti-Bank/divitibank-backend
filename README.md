@@ -180,4 +180,6 @@ as informações que serão inseridas são essas:
 }
 ```
 
+## licensa do MIT
 
+[MIT](https://choosealicense.com/licenses/mit/)
