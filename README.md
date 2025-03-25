@@ -14,7 +14,7 @@ essa api serve para interagir com os dados do banco de dados
 
 ### remotamente
 
-use o link do [render](https://divitibank-backend.onrender.com)
+use o link do [render](https://divitibank-backend.onrender.com/swagger-ui/index.html#/)
 
 ### localmente
 
@@ -103,3 +103,83 @@ ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a
   "mensagem": "a conta foi inserida com sucesso"
 }
 ```
+
+### deletar conta corrente
+```http
+DELETE /contas/{cpf}/excluir
+```
+ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cpf
+</br> a função vai retornar um json dizendo se ela conseguiu ou não
+```JSON
+{
+  "status": "erro",
+  "mensagem": "já existe uma conta com esse CPF"
+}
+```
+
+### fazer transferencias
+```http
+PUT /contas/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}
+```
+ele vai perguntar o cpf do usuario que voce quer transferir e depois perguntar o metodo de pagamento que vai ser um numero de 0 a 2.
+O dinheiro escolhido para ser transferido, vai direto para a carteira digital do destinatário.
+</br>
+cada numero signfica um método de pagamento diferente
+</br> O numero 0 é a carteira digital do usuario
+</br> O numero 1 é o cartão "blue" do usuario, se ele tiver
+</br> O numero 2 é o cartão "black" do usuario, se ele tiver
+</br> ele retorna um json caso tenha dado errado ou certo
+```JSON
+{
+  "status": "erro",
+  "mensagem": "Saldo insuficiente para a transferência"
+}
+```
+
+### gerar comprovante
+```http
+GET /contas/gerarcomprovante/{cpfRemetente}/{cpfDestino}/{dataTransferencia}/{dinheiroTransferido}
+```
+ele vai gerar um comprovante mostrando informações de quem recebeu, de quem pagou, a data, a hora e a quantia transferida
+</br> ele vai retornar um json das informações de cada usuario
+```JSON
+{
+  "nome_destinatario": "João teste",
+  "dinheiro_transferido": "100.0",
+  "cpf_destinatario": "111.222.333-54",
+  "data_e_hora": "2025-03-25T00:06:33.196+00:00",
+  "nome_autor": "Larissa teste",
+  "cpf_autor": "333.564.999-45"
+}
+```
+
+### criar um cartao
+```http
+POST /contas/criar/cartao/{cpf}
+```
+ele vai buscar o cpf do usuario inserido e vai pedir as informações em forma de json para o sistema inserir no cartao, como: crédito, cvc, numero do cartão e etc.
+</br> ele vai retornar um json falando se ele conseguiu ou não inserir o cartão
+```JSON
+{
+  "status": "sucesso",
+  "mensagem": "o cartão foi inserida com sucesso"
+}
+```
+as informações que serão inseridas são essas:
+```JSON
+{
+  "status": "string",
+  "credito": 0,
+  "tipo_cartao": "string",
+  "cor_cartao": "string",
+  "aproximacao": true,
+  "cvc": 0,
+  "nome_cartao": "string",
+  "numero_cartao": "string",
+  "validade": "string"
+}
+```
+
+## licensa do MIT
+
+[MIT](https://choosealicense.com/licenses/mit/)
