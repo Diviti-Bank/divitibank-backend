@@ -262,13 +262,19 @@ public class ContaCorrenteService {
         Map<String, Object> response = new HashMap<>();
         if (contaTeste != null) {
             if (cartaoPorCor != null) {
-                contaCorrenteRepository.atualizarCreditoCartao(cpf, cor, novoCredito);;
+                Cartao cartao = cartaoPorCor.getCartoes().get(0);
+                double dinheiro = cartao.getCredito() + novoCredito;
+
+                contaCorrenteRepository.atualizarCreditoCartao(cpf, cor, dinheiro);
+
                 response.put("status", "sucesso");
                 response.put("mensagem", "o crédito foi atualizado com sucesso");
+
                 return ResponseEntity.ok(response);
             } else {
                 response.put("status", "erro");
                 response.put("mensagem", "esse cartão não existe");
+                
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         }else {
@@ -277,4 +283,6 @@ public class ContaCorrenteService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
+
 }
