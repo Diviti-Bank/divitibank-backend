@@ -240,8 +240,11 @@ public class ContaCorrenteService {
         if (contaTeste != null) {
             if (cartaoPorCor != null) {
                 contaCorrenteRepository.atualizarStatusCartao(cpf, cor, status);
+
                 response.put("status", "sucesso");
                 response.put("mensagem", "o status foi atualizado com sucesso");
+                response.put("status atual", status);
+
                 return ResponseEntity.ok(response);
             } else {
                 response.put("status", "erro");
@@ -269,6 +272,7 @@ public class ContaCorrenteService {
 
                 response.put("status", "sucesso");
                 response.put("mensagem", "o crédito foi atualizado com sucesso");
+                response.put("credito atual", dinheiro);
 
                 return ResponseEntity.ok(response);
             } else {
