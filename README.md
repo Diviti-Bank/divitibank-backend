@@ -81,7 +81,7 @@ Ele vai pegar todas as contas e vai retornar o documento da conta buscada por cp
 ```http
 GET /contas/{cpf}/informacoes
 ```
-Ele pega algumas informações do usuario para poder utilizar em uma tela onde so mostra essas informações do usuario
+Ele pega algumas informações do usuário para poder utilizar em uma tela onde so mostra essas informações do usuário
 </br> exemplo de retorno da função:
 ```JSON
 {
@@ -108,7 +108,7 @@ Ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a
 ```http
 DELETE /contas/{cpf}/excluir
 ```
-Ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cpf
+Ele vai buscar o cpf do usuário e se ele existir, ele exclui a conta com esse cpf
 </br> a função vai retornar um json dizendo se ela conseguiu ou não
 ```JSON
 {
@@ -121,13 +121,13 @@ Ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cp
 ```http
 PUT /contas/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}
 ```
-Ele vai perguntar o cpf do usuario que voce quer transferir e depois perguntar o metodo de pagamento que vai ser um numero de 0 a 2.
+Ele vai perguntar o cpf do usuário que voce quer transferir e depois perguntar o metodo de pagamento que vai ser um numero de 0 a 2.
 O dinheiro escolhido para ser transferido, vai direto para a carteira digital do destinatário.
 </br>
 cada numero signfica um método de pagamento diferente
-</br> O numero 0 é a carteira digital do usuario
-</br> O numero 1 é o cartão "blue" do usuario, se ele tiver
-</br> O numero 2 é o cartão "black" do usuario, se ele tiver
+</br> O numero 0 é a carteira digital do usuário
+</br> O numero 1 é o cartão "blue" do usuário, se ele tiver
+</br> O numero 2 é o cartão "black" do usuário, se ele tiver
 </br> ele retorna um json caso tenha dado errado ou certo
 ```JSON
 {
@@ -140,8 +140,9 @@ cada numero signfica um método de pagamento diferente
 ```http
 GET /contas/gerarcomprovante/{cpfRemetente}/{cpfDestino}/{dataTransferencia}/{dinheiroTransferido}
 ```
-ele vai gerar um comprovante mostrando informações de quem recebeu, de quem pagou, a data, a hora e a quantia transferida
-</br> ele vai retornar um json das informações de cada usuario
+ele vai gerar um comprovante mostrando informações de quem recebeu, de quem pagou, a data, a hora e a quantia transferida. 
+</br> Vai receber como parâmetro o CPF do remetente, CPF do destinatário e o dinheiro que foi transferido 
+</br> ele vai retornar um json das informações de cada usuário
 ```JSON
 {
   "nome_destinatario": "João teste",
@@ -157,7 +158,7 @@ ele vai gerar um comprovante mostrando informações de quem recebeu, de quem pa
 ```http
 POST /contas/criar/cartao/{cpf}
 ```
-ele vai buscar o cpf do usuario inserido e vai pedir as informações em forma de json para o sistema inserir no cartao, como: crédito, cvc, numero do cartão e etc.
+ele vai buscar o cpf do usuário inserido e vai pedir as informações em forma de json para o sistema inserir no cartao, como: crédito, cvc, numero do cartão e etc.
 </br> ele vai retornar um json falando se ele conseguiu ou não inserir o cartão
 ```JSON
 {
@@ -177,6 +178,35 @@ as informações que serão inseridas são essas:
   "nome_cartao": "string",
   "numero_cartao": "string",
   "validade": "string"
+}
+```
+
+### Atualizar o status de um cartão
+```http
+PUT /contas/mudarstatus/{cpf}/{cor}/{status}
+```
+Essa função vai alterar o status do cartão (se ele é inativo ou ativo). Ele pegar o CPF do usuário, cor do cartao e o status que você deseja mudar (tem que ser 'inativo' ou 'ativo')
+</br> a função vai retornar uma mensagem dizendo se deu certo. Caso tenha dado certo, ele vai mostrar o status atual do cartão
+```JSON
+{
+  "mensagem": "o status foi atualizado com sucesso",
+  "status atual": "ativo",
+  "status": "sucesso"
+}
+```
+
+### Modificar o credito do cartão
+```http
+PUT /contas/mudarcredito/{cpf}/{cor}/{novoCredito}
+```
+Essa função modifica o credito do cartão conforme o sistema desejar. Vai receber como parâmetro o CPF do usuário, a cor do cartão desejado e o crédito novo a ser inserido.
+</br> o crédito vai ser sempre adicionado no saldo atual do cartão, então caso o sistema queira descontar o saldo do cartão, é necessário passar o número como negativo.
+</br> a função vai retornar uma mensagem dizendo se deu certo ou errado. Caso tenha dado certo, ele vai mostrar o saldo atual do cartão. 
+```JSON
+{
+  "credito atual": 400,
+  "mensagem": "o crédito foi atualizado com sucesso",
+  "status": "sucesso"
 }
 ```
 
