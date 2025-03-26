@@ -1,9 +1,9 @@
 # API do DivitiBank
 
-essa api serve para interagir com os dados do banco de dados
+Essa api serve para interagir com os dados do banco de dados
 </br> para melhorar o desenvolvimento do app DivitiBank.
 
-## tecnologias usadas
+## Tecnologias usadas
 </br>
 
 - SpringBoot utilizando Java
@@ -12,35 +12,35 @@ essa api serve para interagir com os dados do banco de dados
 
 # Como configurar a API do DivitiBank
 
-### remotamente
+### Remotamente
 
-use o link do [render](https://divitibank-backend.onrender.com/swagger-ui/index.html#/)
+Use o link do [render](https://divitibank-backend.onrender.com/swagger-ui/index.html#/)
 
-### localmente
+### Localmente
 
 Utilize o comando git clone para clonar o repositorio
 ```gitBash
 git clone https://github.com/Diviti-Bank/divitibank-backend.git
 ```
-instale as dependencias na terminal do projeto
+Instale as dependencias na terminal do projeto
 ```bash
 mvn clean install
 ```
-execute o projeto springboot na mesma terminal
+Execute o projeto springboot na mesma terminal
 ```bash
 mvn spring-boot:run
 ```
 </br> Depois, abra o Swagger pelo localhost utilizando o link http://localhost:8080/swagger-ui.html
 
-então você já pode testar as funções da api local
+Então você já pode testar as funções da api local
 
-# como utilizar a API
+# Como utilizar a API
 
-### para listar as contas por cpf  
+### Para listar as contas por cpf  
 ```http
 GET /contas/buscar/{cpf}
 ```
-ele vai pegar todas as contas e vai retornar o documento da conta buscada por cpf
+Ele vai pegar todas as contas e vai retornar o documento da conta buscada por cpf
 </br> exemplo do retorno:
 
 ```JSON
@@ -77,11 +77,11 @@ ele vai pegar todas as contas e vai retornar o documento da conta buscada por cp
 }
 ```
 
-### pegar informações especificas da conta
+### Pegar informações especificas da conta
 ```http
 GET /contas/{cpf}/informacoes
 ```
-ele pega algumas informações do usuario para poder utilizar em uma tela onde so mostra essas informações do usuario
+Ele pega algumas informações do usuario para poder utilizar em uma tela onde so mostra essas informações do usuario
 </br> exemplo de retorno da função:
 ```JSON
 {
@@ -91,11 +91,11 @@ ele pega algumas informações do usuario para poder utilizar em uma tela onde s
 }
 ```
 
-### criar conta corrente
+### Criar conta corrente
 ```http
 POST /contas/criar
 ```
-ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a função cria outra conta
+Ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a função cria outra conta
 </br> a função vai retornar um json dizendo se deu certo ou não
 ```JSON
 {
@@ -104,11 +104,11 @@ ele vai verificar se há uma outra conta com esse mesmo cpf e caso não tenha, a
 }
 ```
 
-### deletar conta corrente
+### Deletar conta corrente
 ```http
 DELETE /contas/{cpf}/excluir
 ```
-ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cpf
+Ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cpf
 </br> a função vai retornar um json dizendo se ela conseguiu ou não
 ```JSON
 {
@@ -117,11 +117,11 @@ ele vai buscar o cpf do usuario e se ele existir, ele exclui a conta com esse cp
 }
 ```
 
-### fazer transferencias
+### Fazer transferencias
 ```http
 PUT /contas/transferir/{cpfRemetente}/{cpfDestino}/{dinheiro}/{metodo_pagamento}
 ```
-ele vai perguntar o cpf do usuario que voce quer transferir e depois perguntar o metodo de pagamento que vai ser um numero de 0 a 2.
+Ele vai perguntar o cpf do usuario que voce quer transferir e depois perguntar o metodo de pagamento que vai ser um numero de 0 a 2.
 O dinheiro escolhido para ser transferido, vai direto para a carteira digital do destinatário.
 </br>
 cada numero signfica um método de pagamento diferente
@@ -136,7 +136,7 @@ cada numero signfica um método de pagamento diferente
 }
 ```
 
-### gerar comprovante
+### Gerar comprovante
 ```http
 GET /contas/gerarcomprovante/{cpfRemetente}/{cpfDestino}/{dataTransferencia}/{dinheiroTransferido}
 ```
@@ -153,7 +153,7 @@ ele vai gerar um comprovante mostrando informações de quem recebeu, de quem pa
 }
 ```
 
-### criar um cartao
+### Criar um cartao
 ```http
 POST /contas/criar/cartao/{cpf}
 ```
