@@ -30,4 +30,7 @@ public interface ContaCorrenteRepository extends MongoRepository<ContaCorrente, 
     @Query("{ 'cpf': ?0}")
     @Update("{ '$push': { 'extrato': ?1 } }")
     void atualizarExtrato(String cpf, Extrato extrato);
+    @Query("{ 'cpf': ?0 }")
+    @Update("{ '$pull': { 'cartoes': { 'cor_cartao': ?1 } } }")
+    void excluirCartao(String cpf, String cor);
 }

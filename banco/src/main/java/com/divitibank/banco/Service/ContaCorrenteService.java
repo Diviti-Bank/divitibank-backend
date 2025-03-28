@@ -288,5 +288,31 @@ public class ContaCorrenteService {
         }
     }
 
+    public ResponseEntity<Map<String, Object>> excluirCartaoPorCor(String cpf, String cor) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        ContaCorrente cartaoPorCor = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            if (cartaoPorCor != null) {
+                contaCorrenteRepository.excluirCartao(cpf, cor);
+
+                response.put("status", "sucesso");
+                response.put("mensagem", "o cartao foi excluido com sucesso");
+
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("status", "erro");
+                response.put("mensagem", "esse cartão não existe");
+                
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
 
 }

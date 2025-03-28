@@ -98,5 +98,10 @@ public class ContaCorreneController {
     public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(@PathVariable String cpf,@PathVariable String cor,@PathVariable double novoCredito) {
         return contaCorrenteService.atualizarCreditoCartao(cpf, cor, novoCredito);
     }
+
+    @DeleteMapping("/excluircartao/{cpf}/{cor}")
+    public ResponseEntity<Map<String, Object>> excluirCartaoPorCor(@PathVariable String cpf, @PathVariable String cor) {
+        return contaCorrenteService.excluirCartaoPorCor(cpf, cor);
+    }
     
 }
