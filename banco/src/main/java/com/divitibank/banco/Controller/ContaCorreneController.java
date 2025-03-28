@@ -85,7 +85,7 @@ public class ContaCorreneController {
     }
 
     @GetMapping("/gerarcomprovante/{cpfRemetente}/{cpfDestino}/{dinheiroTransferido}")
-    public ResponseEntity<Map<String, Object>>  gerarComprovante(@RequestParam String cpfRemetente,@RequestParam String cpfDestino,@RequestParam double dinheiroTransferido) {
+    public ResponseEntity<Map<String, Object>>  gerarComprovante(@PathVariable String cpfRemetente,@PathVariable String cpfDestino,@PathVariable double dinheiroTransferido) {
         return contaCorrenteService.gerarComprovante(cpfRemetente, cpfDestino, dinheiroTransferido);
     }
     
