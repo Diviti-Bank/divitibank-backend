@@ -8,6 +8,7 @@ public class Cartao {
     private String tipo_cartao;
     private String cor_cartao;
     private boolean aproximacao;
+    private Double fatura;
     private int cvc;
     private String nome_cartao;
     private String numero_cartao;
@@ -23,6 +24,24 @@ public class Cartao {
         this.numero_cartao = numero_cartao;
         this.validade = validade;
     }
+
+    
+
+    public Cartao(String status, double credito, String tipo_cartao, String cor_cartao, boolean aproximacao,
+            double fatura, int cvc, String nome_cartao, String numero_cartao, String validade) {
+        this.status = status;
+        this.credito = credito;
+        this.tipo_cartao = tipo_cartao;
+        this.cor_cartao = cor_cartao;
+        this.aproximacao = aproximacao;
+        this.fatura = fatura;
+        this.cvc = cvc;
+        this.nome_cartao = nome_cartao;
+        this.numero_cartao = numero_cartao;
+        this.validade = validade;
+    }
+
+
 
     public Cartao() {
     }
@@ -99,14 +118,20 @@ public class Cartao {
         this.cor_cartao = cor_cartao;
     }
 
+    public double getFatura() {
+        return fatura;
+    }
+
+
+
+    public void setFatura(double fatura) {
+        this.fatura = fatura;
+    }
+
     @Override
     public String toString() {
         return "Cartao [status=" + status + ", credito=" + credito + ", tipo_cartao=" + tipo_cartao + ", cor_cartao="
                 + cor_cartao + ", aproximacao=" + aproximacao + ", cvc=" + cvc + ", nome_cartao=" + nome_cartao
-                + ", numero_cartao=" + numero_cartao + ", validade=" + validade + "]";
+                + ", numero_cartao=" + numero_cartao + ", validade=" + validade + ", fatura=" + fatura + "]";
     }
-
-    
-
-    
 }

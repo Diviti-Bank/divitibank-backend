@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.util.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -88,6 +89,16 @@ public class ContaCorrenteService {
                             contaRemetente.getExtrato().add(extratoRemetente);
                             Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                             contaDestino.getExtrato().add(extratoDestino);
+
+                            if(cartaoblue.getTipo_cartao().equals("crédito")) {
+                                contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, dinheiro, cartaoblue.getFatura() + dinheiroDouble);
+                            }else {
+                                Random random = new Random();
+                                int num = random.nextInt(1,100);
+                                if (num <= 5) {
+                                    dinheiroDouble = 0.95;
+                                }
+                            }
                             
                             contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                             contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() -  dinheiroDouble);
@@ -119,6 +130,16 @@ public class ContaCorrenteService {
                         contaRemetente.getExtrato().add(extratoRemetente);
                         Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                         contaDestino.getExtrato().add(extratoDestino);
+
+                        if(cartaoblack.getTipo_cartao().equals("crédito")) {
+                            contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, dinheiro, cartaoblack.getFatura() + dinheiroDouble);
+                        }else {
+                            Random random = new Random();
+                            int num = random.nextInt(1,100);
+                            if (num <= 8) {
+                                dinheiroDouble = 0.95;
+                            }
+                        }
                     
                         contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                         contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblack.getCredito() - dinheiroDouble);
