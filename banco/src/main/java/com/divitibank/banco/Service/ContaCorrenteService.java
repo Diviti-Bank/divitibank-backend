@@ -363,7 +363,27 @@ public class ContaCorrenteService {
             contaCorrenteRepository.save(contaTeste);
 
             response.put("status", "sucesso");
-            response.put("mensagem", "o sobrenome do usuario foi modificado com sucesso");
+            response.put("mensagem", "o e-mail do usuário foi modificado com sucesso");
+            response.put("email atual", contaTeste.getEmail());
+
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<Map<String, Object>> mudarSenha(String cpf, String senha) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            contaTeste.setSenha(senha);
+            contaCorrenteRepository.save(contaTeste);
+
+            response.put("status", "sucesso");
+            response.put("mensagem", "a senha do usuário foi modificado com sucesso");
             response.put("email atual", contaTeste.getEmail());
 
             return ResponseEntity.ok(response);

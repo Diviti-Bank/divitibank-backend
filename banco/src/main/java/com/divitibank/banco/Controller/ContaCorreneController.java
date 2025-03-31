@@ -102,14 +102,19 @@ public class ContaCorreneController {
         return contaCorrenteService.mudarNome(cpf, nome);
     }
 
-    @PutMapping("/mudarnome/{cpf}/{nome}")
+    @PutMapping("/mudarsobrenome/{cpf}/{sobrenome}")
     public ResponseEntity<Map<String, Object>> mudarSobrenome(@PathVariable String cpf, @PathVariable String sobrenome) {
         return contaCorrenteService.mudarSobrenome(cpf, sobrenome);
     }
 
-    @PutMapping("/mudarnome/{cpf}/{nome}")
+    @PutMapping("/mudaremail/{cpf}/{email}")
     public ResponseEntity<Map<String, Object>> mudarEmail(@PathVariable String cpf, @PathVariable String email) {
         return contaCorrenteService.mudarSobrenome(cpf, email);
+    }
+
+    @PutMapping("/mudarsenha/{cpf}/{senha}")
+    public ResponseEntity<Map<String, Object>> mudarSenha(@PathVariable String cpf, @PathVariable String senha) {
+        return contaCorrenteService.mudarSenha(cpf, senha);
     }
 
     @DeleteMapping("/excluircartao/{cpf}/{cor}")
