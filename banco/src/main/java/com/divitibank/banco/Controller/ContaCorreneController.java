@@ -19,8 +19,6 @@ import com.divitibank.banco.Entity.Cartao;
 import com.divitibank.banco.Entity.ContaCorrente;
 import com.divitibank.banco.Entity.Extrato;
 import com.divitibank.banco.Service.ContaCorrenteService;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 
 
@@ -97,6 +95,21 @@ public class ContaCorreneController {
     @PutMapping("/mudarcredito/{cpf}/{cor}/{novoCredito}")
     public ResponseEntity<Map<String, Object>> atualizarCreditoCartao(@PathVariable String cpf,@PathVariable String cor,@PathVariable double novoCredito) {
         return contaCorrenteService.atualizarCreditoCartao(cpf, cor, novoCredito);
+    }
+
+    @PutMapping("/mudarnome/{cpf}/{nome}")
+    public ResponseEntity<Map<String, Object>> mudarNome(@PathVariable String cpf, @PathVariable String nome) {
+        return contaCorrenteService.mudarNome(cpf, nome);
+    }
+
+    @PutMapping("/mudarnome/{cpf}/{nome}")
+    public ResponseEntity<Map<String, Object>> mudarSobrenome(@PathVariable String cpf, @PathVariable String sobrenome) {
+        return contaCorrenteService.mudarSobrenome(cpf, sobrenome);
+    }
+
+    @PutMapping("/mudarnome/{cpf}/{nome}")
+    public ResponseEntity<Map<String, Object>> mudarEmail(@PathVariable String cpf, @PathVariable String email) {
+        return contaCorrenteService.mudarSobrenome(cpf, email);
     }
 
     @DeleteMapping("/excluircartao/{cpf}/{cor}")

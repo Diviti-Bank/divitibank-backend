@@ -314,5 +314,64 @@ public class ContaCorrenteService {
         }
     }
 
+    public ResponseEntity<Map<String, Object>> mudarNome(String cpf, String nome) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            contaTeste.setNome(nome);
+            contaCorrenteRepository.save(contaTeste);
+
+            response.put("status", "sucesso");
+            response.put("mensagem", "nome do usuario foi modificado com sucesso");
+            response.put("nome atual", contaTeste.getNome());
+
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<Map<String, Object>> mudarSobrenome(String cpf, String sobrenome) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            contaTeste.setSobrenome(sobrenome);
+            contaCorrenteRepository.save(contaTeste);
+
+            response.put("status", "sucesso");
+            response.put("mensagem", "o sobrenome do usuario foi modificado com sucesso");
+            response.put("sobrenome atual", contaTeste.getSobrenome());
+
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<Map<String, Object>> mudarEmail(String cpf, String email) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        
+        Map<String, Object> response = new HashMap<>();
+        if (contaTeste != null) {
+            contaTeste.setEmail(email);
+            contaCorrenteRepository.save(contaTeste);
+
+            response.put("status", "sucesso");
+            response.put("mensagem", "o sobrenome do usuario foi modificado com sucesso");
+            response.put("email atual", contaTeste.getEmail());
+
+            return ResponseEntity.ok(response);
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 
 }
