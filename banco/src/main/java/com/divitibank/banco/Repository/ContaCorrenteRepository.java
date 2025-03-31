@@ -28,6 +28,9 @@ public interface ContaCorrenteRepository extends MongoRepository<ContaCorrente, 
     @Update("{ '$set': { 'cartoes.$.fatura': ?2 } }")
     void atualizarFaturaCartao(String cpf, String cor, double novaFatura);
     @Query("{ 'cpf': ?0, 'cartoes.cor_cartao': ?1 }")
+    @Update("{ '$set': { 'cartoes.$.fatura': ?2 } }")
+    void atualizarFaturaCartao2(String cpf, String cor, double novaFatura);
+    @Query("{ 'cpf': ?0, 'cartoes.cor_cartao': ?1 }")
     @Update("{ '$set': { 'cartoes.$.status': ?2 } }")
     void atualizarStatusCartao(String cpf, String cor, String status);
     @Query("{ 'cpf': ?0}")

@@ -25,10 +25,10 @@ import com.divitibank.banco.Service.ContaCorrenteService;
 
 @RestController
 @RequestMapping("/contas")
-public class ContaCorreneController {
+public class ContaCorrenteController {
     private final ContaCorrenteService contaCorrenteService;
 
-    public ContaCorreneController(ContaCorrenteService contaCorrenteService) {
+    public ContaCorrenteController(ContaCorrenteService contaCorrenteService) {
         this.contaCorrenteService = contaCorrenteService;
     }
 
@@ -120,6 +120,11 @@ public class ContaCorreneController {
     @DeleteMapping("/excluircartao/{cpf}/{cor}")
     public ResponseEntity<Map<String, Object>> excluirCartaoPorCor(@PathVariable String cpf, @PathVariable String cor) {
         return contaCorrenteService.excluirCartaoPorCor(cpf, cor);
+    }
+
+    @PutMapping("/pagarfatura/{cpf}/{cor}")
+    public ResponseEntity<Map<String, Object>> pagarFatura(@PathVariable String cpf, @PathVariable String cor) {
+        return contaCorrenteService.pagarFatura(cpf, cor);
     }
     
 }

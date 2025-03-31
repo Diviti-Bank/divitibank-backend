@@ -70,6 +70,7 @@ public class ContaCorrenteService {
                         contaCorrenteRepository.save(contaDestino);
 
                         response.put("status", "sucesso");
+                        response.put("saldo atual do remetente", contaRemetente.getSaldo());
                         response.put("mensagem", "Transferência realizada com sucesso");
 
                         return ResponseEntity.ok(response);
@@ -90,8 +91,8 @@ public class ContaCorrenteService {
                             Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                             contaDestino.getExtrato().add(extratoDestino);
 
-                            if(cartaoblue.getTipo_cartao().equals("crédito")) {
-                                contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, dinheiro, cartaoblue.getFatura() + dinheiroDouble);
+                            if(cartaoblue.getTipo_cartao().equals("Crédito")) {
+                                contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, "blue", cartaoblue.getFatura() + dinheiroDouble);
                             }else {
                                 Random random = new Random();
                                 int num = random.nextInt(1,100);
@@ -105,6 +106,7 @@ public class ContaCorrenteService {
                             contaCorrenteRepository.save(contaDestino);
     
                             response.put("status", "sucesso");
+                            response.put("saldo atual do cartão do remetente", cartaoblue.getCredito() - dinheiroDouble);
                             response.put("mensagem", "Transferência realizada com sucesso");
     
                             return ResponseEntity.ok(response);                  
@@ -131,8 +133,8 @@ public class ContaCorrenteService {
                         Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                         contaDestino.getExtrato().add(extratoDestino);
 
-                        if(cartaoblack.getTipo_cartao().equals("crédito")) {
-                            contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, dinheiro, cartaoblack.getFatura() + dinheiroDouble);
+                        if(cartaoblack.getTipo_cartao().equals("Crédito")) {
+                            contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, "black", cartaoblack.getFatura() + dinheiroDouble);
                         }else {
                             Random random = new Random();
                             int num = random.nextInt(1,100);
@@ -142,10 +144,11 @@ public class ContaCorrenteService {
                         }
                     
                         contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
-                        contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblack.getCredito() - dinheiroDouble);
+                        contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "black", cartaoblack.getCredito() - dinheiroDouble);
                         contaCorrenteRepository.save(contaDestino);
     
                         response.put("status", "sucesso");
+                        response.put("saldo atual do cartão do remetente", cartaoblack.getCredito() - dinheiroDouble);
                         response.put("mensagem", "Transferência realizada com sucesso");
     
                         return ResponseEntity.ok(response);                  
@@ -405,12 +408,55 @@ public class ContaCorrenteService {
 
             response.put("status", "sucesso");
             response.put("mensagem", "a senha do usuário foi modificado com sucesso");
-            response.put("email atual", contaTeste.getEmail());
+            response.put("email atual", contaTeste.getSenha());
 
             return ResponseEntity.ok(response);
         }else {
             response.put("status", "erro");
             response.put("mensagem", "essa conta não existe");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<Map<String, Object>> pagarFatura(String cpf, String cor) {
+        ContaCorrente contaTeste = contaCorrenteRepository.buscarPorCpf(cpf);
+        ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpf,cor);
+        Cartao cartao = cartoes.getCartoes().getFirst();
+        Map<String, Object> response = new HashMap<>();
+
+        
+        if (contaTeste != null) {
+            if(cartao != null) {
+                if (contaTeste.getSaldo() >= cartao.getFatura()) {
+
+                    Extrato extratoDestino = new Extrato("gastos","fatura", (cartao.getFatura())*-1, new Date());
+                    contaTeste.getExtrato().add(extratoDestino);
+                    contaTeste.setSaldo(contaTeste.getSaldo() - cartao.getFatura());
+                    
+                    cartao.setFatura(0);
+                    
+                    contaCorrenteRepository.save(contaTeste);
+                    
+                    response.put("status", "sucesso");
+                    response.put("fatura atual", cartao.getFatura());
+                    response.put("mensagem", "a fatura foi paga com sucesso");
+                    
+                    contaCorrenteRepository.atualizarFaturaCartao2(cpf, cor, 0);
+        
+                    return ResponseEntity.ok(response);
+                }else {
+                    response.put("status", "erro");
+                    response.put("mensagem", "saldo insuficiente para pagar a fatura");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                }
+            }else {
+                response.put("status", "erro");
+                response.put("mensagem", "esse cartão não existe");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+        }else {
+            response.put("status", "erro");
+            response.put("mensagem", "esse conta não existe");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
