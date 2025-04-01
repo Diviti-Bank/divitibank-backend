@@ -1,6 +1,6 @@
 package com.divitibank.banco.Entity;
 
-
+import java.util.List;
 
 public class Cartao {
     private String status;
@@ -9,6 +9,7 @@ public class Cartao {
     private String cor_cartao;
     private boolean aproximacao;
     private Double fatura;
+    private List<Extrato> extrato;
     private int cvc;
     private String nome_cartao;
     private String numero_cartao;
@@ -28,12 +29,13 @@ public class Cartao {
     
 
     public Cartao(String status, double credito, String tipo_cartao, String cor_cartao, boolean aproximacao,
-            double fatura, int cvc, String nome_cartao, String numero_cartao, String validade) {
+            double fatura, int cvc, String nome_cartao, String numero_cartao, String validade, List<Extrato> extrato) {
         this.status = status;
         this.credito = credito;
         this.tipo_cartao = tipo_cartao;
         this.cor_cartao = cor_cartao;
         this.aproximacao = aproximacao;
+        this.extrato = extrato;
         this.fatura = fatura;
         this.cvc = cvc;
         this.nome_cartao = nome_cartao;
@@ -122,16 +124,24 @@ public class Cartao {
         return fatura;
     }
 
-
-
     public void setFatura(double fatura) {
         this.fatura = fatura;
+    }  
+
+    public List<Extrato> getExtrato() {
+        return extrato;
     }
+
+    public void setExtrato(List<Extrato> extrato) {
+        this.extrato = extrato;
+    }
+
+
 
     @Override
     public String toString() {
         return "Cartao [status=" + status + ", credito=" + credito + ", tipo_cartao=" + tipo_cartao + ", cor_cartao="
                 + cor_cartao + ", aproximacao=" + aproximacao + ", cvc=" + cvc + ", nome_cartao=" + nome_cartao
-                + ", numero_cartao=" + numero_cartao + ", validade=" + validade + ", fatura=" + fatura + "]";
+                + ", numero_cartao=" + numero_cartao + ", validade=" + validade + ", fatura=" + fatura + ", extrato=" + extrato + "]";
     }
 }
