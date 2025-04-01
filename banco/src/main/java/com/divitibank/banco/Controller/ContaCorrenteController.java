@@ -126,5 +126,10 @@ public class ContaCorrenteController {
     public ResponseEntity<Map<String, Object>> pagarFatura(@PathVariable String cpf, @PathVariable String cor) {
         return contaCorrenteService.pagarFatura(cpf, cor);
     }
+
+    @GetMapping("mostrarextratocartao/{cpf}/{cor}")
+    public List<Extrato> mostarExtratoCartao(@PathVariable String cpf, @PathVariable String cor) {
+        return contaCorrenteService.exibirExtratoCartao(cpf, cor);
+    }
     
 }

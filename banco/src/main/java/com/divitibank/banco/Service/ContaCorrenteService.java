@@ -10,12 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 @Service
 public class ContaCorrenteService {
 
@@ -93,6 +87,11 @@ public class ContaCorrenteService {
 
                             if(cartaoblue.getTipo_cartao().equals("Crédito")) {
                                 contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, "blue", cartaoblue.getFatura() + dinheiroDouble);
+
+                                Extrato extratoCartao = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                                contaDestino.getExtrato().add(extratoDestino);
+                                
+                                contaCorrenteRepository.atualizarExtratoCartao(cpfRemetente, "blue", extratoCartao);
                             }else {
                                 Random random = new Random();
                                 int num = random.nextInt(1,100);
@@ -135,6 +134,11 @@ public class ContaCorrenteService {
 
                         if(cartaoblack.getTipo_cartao().equals("Crédito")) {
                             contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, "black", cartaoblack.getFatura() + dinheiroDouble);
+
+                            Extrato extratoCartao = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
+                            contaDestino.getExtrato().add(extratoDestino);
+
+                            contaCorrenteRepository.atualizarExtratoCartao(cpfRemetente, "black", extratoCartao);
                         }else {
                             Random random = new Random();
                             int num = random.nextInt(1,100);
@@ -432,7 +436,6 @@ public class ContaCorrenteService {
                     Extrato extratoDestino = new Extrato("gastos","fatura", (cartao.getFatura())*-1, new Date());
                     contaTeste.getExtrato().add(extratoDestino);
                     contaTeste.setSaldo(contaTeste.getSaldo() - cartao.getFatura());
-                    
                     cartao.setFatura(0);
                     
                     contaCorrenteRepository.save(contaTeste);
@@ -441,7 +444,8 @@ public class ContaCorrenteService {
                     response.put("fatura atual", cartao.getFatura());
                     response.put("mensagem", "a fatura foi paga com sucesso");
                     
-                    contaCorrenteRepository.atualizarFaturaCartao2(cpf, cor, 0);
+                    contaCorrenteRepository.atualizarFaturaCartao(cpf, cor, 0);
+                    contaCorrenteRepository.limparExtratoCartao(cpf, cor);
         
                     return ResponseEntity.ok(response);
                 }else {
@@ -459,6 +463,16 @@ public class ContaCorrenteService {
             response.put("mensagem", "esse conta não existe");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    public List<Extrato> exibirExtratoCartao(String cpf, String cor) {
+        ContaCorrente conta = contaCorrenteRepository.buscarCartaoPorCor(cpf, cor);
+
+        if (conta == null || conta.getCartoes() == null) {
+            return Collections.emptyList();
+        }
+
+        return conta.getCartoes().stream().findFirst().map(Cartao::getExtrato).orElse(Collections.emptyList());
     }
 
 }
