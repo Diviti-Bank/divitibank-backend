@@ -25,10 +25,10 @@ import com.divitibank.banco.Service.ContaCorrenteService;
 
 @RestController
 @RequestMapping("/contas")
-public class ContaCorreneController {
+public class ContaCorrenteController {
     private final ContaCorrenteService contaCorrenteService;
 
-    public ContaCorreneController(ContaCorrenteService contaCorrenteService) {
+    public ContaCorrenteController(ContaCorrenteService contaCorrenteService) {
         this.contaCorrenteService = contaCorrenteService;
     }
 
@@ -102,19 +102,29 @@ public class ContaCorreneController {
         return contaCorrenteService.mudarNome(cpf, nome);
     }
 
-    @PutMapping("/mudarnome/{cpf}/{nome}")
+    @PutMapping("/mudarsobrenome/{cpf}/{sobrenome}")
     public ResponseEntity<Map<String, Object>> mudarSobrenome(@PathVariable String cpf, @PathVariable String sobrenome) {
         return contaCorrenteService.mudarSobrenome(cpf, sobrenome);
     }
 
-    @PutMapping("/mudarnome/{cpf}/{nome}")
+    @PutMapping("/mudaremail/{cpf}/{email}")
     public ResponseEntity<Map<String, Object>> mudarEmail(@PathVariable String cpf, @PathVariable String email) {
         return contaCorrenteService.mudarSobrenome(cpf, email);
+    }
+
+    @PutMapping("/mudarsenha/{cpf}/{senha}")
+    public ResponseEntity<Map<String, Object>> mudarSenha(@PathVariable String cpf, @PathVariable String senha) {
+        return contaCorrenteService.mudarSenha(cpf, senha);
     }
 
     @DeleteMapping("/excluircartao/{cpf}/{cor}")
     public ResponseEntity<Map<String, Object>> excluirCartaoPorCor(@PathVariable String cpf, @PathVariable String cor) {
         return contaCorrenteService.excluirCartaoPorCor(cpf, cor);
+    }
+
+    @PutMapping("/pagarfatura/{cpf}/{cor}")
+    public ResponseEntity<Map<String, Object>> pagarFatura(@PathVariable String cpf, @PathVariable String cor) {
+        return contaCorrenteService.pagarFatura(cpf, cor);
     }
     
 }
