@@ -14,22 +14,10 @@ public class Cartao {
     private String nome_cartao;
     private String numero_cartao;
     private String validade;
-
-    public Cartao(String status, double credito, String tipo_cartao, boolean aproximacao, int cvc, String nome_cartao, String numero_cartao, String validade) {
-        this.status = status;
-        this.credito = credito;
-        this.tipo_cartao = tipo_cartao;
-        this.aproximacao = aproximacao;
-        this.cvc = cvc;
-        this.nome_cartao = nome_cartao;
-        this.numero_cartao = numero_cartao;
-        this.validade = validade;
-    }
-
     
 
     public Cartao(String status, double credito, String tipo_cartao, String cor_cartao, boolean aproximacao,
-            double fatura, int cvc, String nome_cartao, String numero_cartao, String validade, List<Extrato> extrato) {
+            Double fatura, int cvc, String nome_cartao, String numero_cartao, String validade, List<Extrato> extrato) {
         this.status = status;
         this.credito = credito;
         this.tipo_cartao = tipo_cartao;
@@ -135,8 +123,6 @@ public class Cartao {
     public void setExtrato(List<Extrato> extrato) {
         this.extrato = extrato;
     }
-
-
 
     @Override
     public String toString() {
