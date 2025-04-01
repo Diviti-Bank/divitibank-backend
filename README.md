@@ -128,6 +128,7 @@ cada numero signfica um método de pagamento diferente
 </br> O numero 0 é a carteira digital do usuário
 </br> O numero 1 é o cartão "blue" do usuário, se ele tiver
 </br> O numero 2 é o cartão "black" do usuário, se ele tiver
+</br> Se algum dos cartões escolhidos for de crédito, ele vai cobrar na fatura após fazer a transferencia
 </br> ele retorna um json caso tenha dado errado ou certo
 ```JSON
 {
@@ -206,6 +207,21 @@ Essa função modifica o credito do cartão conforme o sistema desejar. Vai rece
 {
   "credito atual": 400,
   "mensagem": "o crédito foi atualizado com sucesso",
+  "status": "sucesso"
+}
+```
+
+### Pagar a fatura do cartão
+```http
+PUT /contas/pagarfatura/{cpf}/{cor}
+```
+Essa função vai receber o cpf do usuario e a cor do cartão. Ela vai verificar se o usuario tem saldo o suficiente para paga a fatura inteira. Se ele tiver,
+ele desconta do usuário e paga a fatura completa
+</br> ele vai retornar um json dizendo se deu certo ou não
+```JSON
+{
+  "fatura atual": 0,
+  "mensagem": "a fatura foi paga com sucesso",
   "status": "sucesso"
 }
 ```
