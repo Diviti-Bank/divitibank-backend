@@ -77,7 +77,7 @@ public class ContaCorrenteService {
                     ContaCorrente cartoes = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"blue");
                     Cartao cartaoblue = cartoes.getCartoes().getFirst();
                     if (cartaoblue.getStatus().equals("ativo")) {
-                        if ((cartaoblue.getCredito() >= dinheiroDouble)) {
+                        if ((cartaoblue.getCredito() >= dinheiroDouble)||(contaRemetente.getSaldo() >= dinheiroDouble)) {
                             contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                         
                             Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
@@ -85,7 +85,6 @@ public class ContaCorrenteService {
                             Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                             contaDestino.getExtrato().add(extratoDestino);
 
-                            contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                             contaCorrenteRepository.save(contaDestino);
 
                             if(cartaoblue.getTipo_cartao().equals("Crédito")) {
@@ -97,15 +96,18 @@ public class ContaCorrenteService {
                                 contaCorrenteRepository.atualizarExtratoCartao(cpfRemetente, "blue", extratoCartao);
                                 contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() -  dinheiroDouble);
                                 response.put("saldo atual do cartão do remetente", cartaoblue.getCredito() - dinheiroDouble);
+                                contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                             }else {
                                 Random random = new Random();
                                 int num = random.nextInt(1,100);
                                 if (num <= 10) {
                                     dinheiroDouble = 0.95;
                                     extratoRemetente.setTipo("gastos com cashback de 5%");
+                                    contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                                 }
                                 contaCorrenteRepository.atualizarSaldo(cpfRemetente, contaRemetente.getSaldo() - dinheiroDouble);
                                 response.put("saldo atual do remetente", contaRemetente.getSaldo() - dinheiroDouble);
+                                contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                             }
     
                             response.put("status", "sucesso");
@@ -127,7 +129,7 @@ public class ContaCorrenteService {
                 ContaCorrente cartoesBlack = contaCorrenteRepository.buscarCartaoPorCor(cpfRemetente,"black");
                 Cartao cartaoblack = cartoesBlack.getCartoes().getFirst();
                 if (cartaoblack.getStatus().equals("ativo")) {
-                    if (cartaoblack.getCredito() >= dinheiroDouble) {
+                    if ((cartaoblack.getCredito() >= dinheiroDouble)||(contaRemetente.getSaldo() >= dinheiroDouble)) {
                         contaDestino.setSaldo(contaDestino.getSaldo() + dinheiroDouble);
                     
                         Extrato extratoRemetente = new Extrato("gastos",contaDestino.getNome() + " " + contaDestino.getSobrenome(), -dinheiroDouble, new Date());
@@ -135,7 +137,6 @@ public class ContaCorrenteService {
                         Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                         contaDestino.getExtrato().add(extratoDestino);
 
-                        contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                         contaCorrenteRepository.save(contaDestino);
 
                         if(cartaoblack.getTipo_cartao().equals("Crédito")) {
@@ -147,15 +148,18 @@ public class ContaCorrenteService {
                             contaCorrenteRepository.atualizarExtratoCartao(cpfRemetente, "black", extratoCartao);
                             contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "black", cartaoblack.getCredito() - dinheiroDouble);
                             response.put("saldo atual do cartão do remetente", cartaoblack.getCredito() - dinheiroDouble);
+                            contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                         }else {
                             Random random = new Random();
                             int num = random.nextInt(1,100);
                             if (num <= 15) {
                                 dinheiroDouble = 0.95;
                                 extratoRemetente.setTipo("gastos com cashback de 5%");
+                                contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                             }
                             contaCorrenteRepository.atualizarSaldo(cpfRemetente, contaRemetente.getSaldo() - dinheiroDouble);
                             response.put("saldo atual do remetente", contaRemetente.getSaldo() - dinheiroDouble);
+                            contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
                         }
                 
     
