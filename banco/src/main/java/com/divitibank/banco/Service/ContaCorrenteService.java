@@ -102,6 +102,7 @@ public class ContaCorrenteService {
                                 int num = random.nextInt(1,100);
                                 if (num <= 10) {
                                     dinheiroDouble = 0.95;
+                                    extratoRemetente.setTipo("gastos com cashback de 5%");
                                 }
                                 contaCorrenteRepository.atualizarSaldo(cpfRemetente, contaRemetente.getSaldo() - dinheiroDouble);
                                 response.put("saldo atual do remetente", contaRemetente.getSaldo() - dinheiroDouble);
@@ -151,6 +152,7 @@ public class ContaCorrenteService {
                             int num = random.nextInt(1,100);
                             if (num <= 15) {
                                 dinheiroDouble = 0.95;
+                                extratoRemetente.setTipo("gastos com cashback de 5%");
                             }
                             contaCorrenteRepository.atualizarSaldo(cpfRemetente, contaRemetente.getSaldo() - dinheiroDouble);
                             response.put("saldo atual do remetente", contaRemetente.getSaldo() - dinheiroDouble);
