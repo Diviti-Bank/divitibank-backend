@@ -85,6 +85,9 @@ public class ContaCorrenteService {
                             Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                             contaDestino.getExtrato().add(extratoDestino);
 
+                            contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
+                            contaCorrenteRepository.save(contaDestino);
+
                             if(cartaoblue.getTipo_cartao().equals("Crédito")) {
                                 contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, "blue", cartaoblue.getFatura() + dinheiroDouble);
 
@@ -92,20 +95,19 @@ public class ContaCorrenteService {
                                 contaDestino.getExtrato().add(extratoDestino);
                                 
                                 contaCorrenteRepository.atualizarExtratoCartao(cpfRemetente, "blue", extratoCartao);
+                                contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() -  dinheiroDouble);
+                                response.put("saldo atual do cartão do remetente", cartaoblue.getCredito() - dinheiroDouble);
                             }else {
                                 Random random = new Random();
                                 int num = random.nextInt(1,100);
-                                if (num <= 5) {
+                                if (num <= 10) {
                                     dinheiroDouble = 0.95;
                                 }
+                                contaCorrenteRepository.atualizarSaldo(cpfRemetente, contaRemetente.getSaldo() - dinheiroDouble);
+                                response.put("saldo atual do remetente", contaRemetente.getSaldo() - dinheiroDouble);
                             }
-                            
-                            contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
-                            contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "blue", cartaoblue.getCredito() -  dinheiroDouble);
-                            contaCorrenteRepository.save(contaDestino);
     
                             response.put("status", "sucesso");
-                            response.put("saldo atual do cartão do remetente", cartaoblue.getCredito() - dinheiroDouble);
                             response.put("mensagem", "Transferência realizada com sucesso");
     
                             return ResponseEntity.ok(response);                  
@@ -132,6 +134,9 @@ public class ContaCorrenteService {
                         Extrato extratoDestino = new Extrato("recebido",contaRemetente.getNome() + " " + contaRemetente.getSobrenome(), dinheiroDouble, new Date());
                         contaDestino.getExtrato().add(extratoDestino);
 
+                        contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
+                        contaCorrenteRepository.save(contaDestino);
+
                         if(cartaoblack.getTipo_cartao().equals("Crédito")) {
                             contaCorrenteRepository.atualizarFaturaCartao(cpfRemetente, "black", cartaoblack.getFatura() + dinheiroDouble);
 
@@ -139,20 +144,20 @@ public class ContaCorrenteService {
                             contaDestino.getExtrato().add(extratoDestino);
 
                             contaCorrenteRepository.atualizarExtratoCartao(cpfRemetente, "black", extratoCartao);
+                            contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "black", cartaoblack.getCredito() - dinheiroDouble);
+                            response.put("saldo atual do cartão do remetente", cartaoblack.getCredito() - dinheiroDouble);
                         }else {
                             Random random = new Random();
                             int num = random.nextInt(1,100);
-                            if (num <= 8) {
+                            if (num <= 15) {
                                 dinheiroDouble = 0.95;
                             }
+                            contaCorrenteRepository.atualizarSaldo(cpfRemetente, contaRemetente.getSaldo() - dinheiroDouble);
+                            response.put("saldo atual do remetente", contaRemetente.getSaldo() - dinheiroDouble);
                         }
-                    
-                        contaCorrenteRepository.atualizarExtrato(cpfRemetente, extratoRemetente);
-                        contaCorrenteRepository.atualizarCreditoCartao(cpfRemetente, "black", cartaoblack.getCredito() - dinheiroDouble);
-                        contaCorrenteRepository.save(contaDestino);
+                
     
                         response.put("status", "sucesso");
-                        response.put("saldo atual do cartão do remetente", cartaoblack.getCredito() - dinheiroDouble);
                         response.put("mensagem", "Transferência realizada com sucesso");
     
                         return ResponseEntity.ok(response);                  

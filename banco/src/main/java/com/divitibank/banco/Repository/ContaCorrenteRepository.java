@@ -51,6 +51,10 @@ public interface ContaCorrenteRepository extends MongoRepository<ContaCorrente, 
     @Update("{ '$pull': { 'cartoes': { 'cor_cartao': ?1 } } }")
     void excluirCartao(String cpf, String cor);
 
+    @Query("{ 'cpf': ?0 }")
+    @Update("{ '$set': { 'saldo': ?1 } }")
+    void atualizarSaldo(String cpf, double saldo);
+
     @Query("{ 'cpf': ?0, 'cartoes.cor_cartao': ?1}")
     @Update("{ $set: { 'cartoes.$.extrato': [] } }")
     void limparExtratoCartao(String cpf, String cor);
